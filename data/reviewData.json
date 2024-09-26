@@ -1,0 +1,27 @@
+[
+  {
+    "name": "John Doe",
+    "description": "Amazing service and great experience overall!",
+    "stars": 5
+  },
+  {
+    "name": "Jane Smith",
+    "description": "Good, but there’s room for improvement.",
+    "stars": 4
+  },
+  {
+    "name": "Michael Brown",
+    "description": "Not satisfied with the service. It took too long.",
+    "stars": 2
+  },
+  {
+    "name": "Emily Davis",
+    "description": "Excellent customer support and quick response times.",
+    "stars": 5
+  },
+  {
+    "name": "Chris Wilson",
+    "description": "Average experience. Expected more from the reviews.",
+    "stars": 3
+  }
+]

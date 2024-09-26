@@ -1,0 +1,20 @@
+[
+  {
+    "logo": "https://example.com/images/partner1-logo.png",
+    "name": "TechCorp",
+    "links": ["https://techcorp.com", "https://techcorp.com/about"],
+    "description": "A leading technology company specializing in innovative solutions."
+  },
+  {
+    "logo": "https://example.com/images/partner2-logo.png",
+    "name": "GreenEarth",
+    "links": ["https://greenearth.org", "https://greenearth.org/our-work"],
+    "description": "An environmental organization committed to sustainable practices."
+  },
+  {
+    "logo": "https://example.com/images/partner3-logo.png",
+    "name": "HealthPlus",
+    "links": ["https://healthplus.com", "https://healthplus.com/services"],
+    "description": "A healthcare provider offering a wide range of medical services."
+  }
+]

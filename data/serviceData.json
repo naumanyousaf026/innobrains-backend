@@ -1,0 +1,17 @@
+[
+  {
+    "icon": "fas fa-laptop-code",
+    "name": "Web Development",
+    "description": "Building responsive and dynamic websites with modern web technologies."
+  },
+  {
+    "icon": "fas fa-mobile-alt",
+    "name": "Mobile App Development",
+    "description": "Creating feature-rich and user-friendly mobile applications for both Android and iOS."
+  },
+  {
+    "icon": "fas fa-cloud",
+    "name": "Cloud Services",
+    "description": "Providing scalable and secure cloud solutions for your business infrastructure."
+  }
+]

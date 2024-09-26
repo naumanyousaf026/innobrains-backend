@@ -1,0 +1,8 @@
+{
+  "email": "john.doe@example.com",
+  "emailIcon": "fas fa-envelope",
+  "location": "New York, USA",
+  "locationIcon": "fas fa-map-marker-alt",
+  "number": "+1234567890",
+  "numberIcon": "fas fa-phone"
+}
