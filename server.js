@@ -24,6 +24,8 @@ const contactRoutes = require("./routes/contactRoutes");
 const productRoutes = require("./routes/product");
 const serviceRoutes = require("./routes/service");
 const satisfieRoutes = require("./routes/satisfieRoutes");
+const contactInfoRoutes = require("./routes/contactInfoRoutes");
+
 // Connect to MongoDB
 mongoose
   .connect("mongodb://localhost:27017/aboutUsApp", {
@@ -47,6 +49,7 @@ app.use("/api/service", serviceRoutes);
 app.use("/api/visitor", visitorRoutes);
 app.use("/api/team", teamRoutes);
 app.use("/api/achievements", achievementRoutes);
+app.use("/api/contact-info", contactInfoRoutes);
 app.use("/api/satisfie", satisfieRoutes);
 // Start the server
 const port = 5000;
