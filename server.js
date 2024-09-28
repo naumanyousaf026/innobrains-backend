@@ -20,7 +20,7 @@ const achievementRoutes = require("./routes/achievementRoutes");
 const visitorRoutes = require("./routes/visitor");
 const partnerRoutes = require("./routes/partner");
 const blogRoutes = require("./routes/blog");
-const contactRoutes = require("./routes/contactRoutes");
+const contactFormRoutes = require("./routes/ContactForm");
 const productRoutes = require("./routes/product");
 const serviceRoutes = require("./routes/service");
 const satisfieRoutes = require("./routes/satisfieRoutes");
@@ -43,7 +43,7 @@ mongoose
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/partner", partnerRoutes);
 app.use("/api/blog", blogRoutes);
-app.use("/api/contact", contactRoutes);
+app.use("/api/contact", contactFormRoutes);
 app.use("/product", productRoutes);
 app.use("/api/service", serviceRoutes);
 app.use("/api/visitor", visitorRoutes);

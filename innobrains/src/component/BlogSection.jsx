@@ -23,20 +23,6 @@ const BlogSection = () => {
   return (
     <div className="py-10 bg-[#F9FAFB]">
       <div className="container px-4 w-5/6 mx-auto">
-        {/* Header Section */}
-        <div className="w-full max-w-2xl mb-14">
-          <span className="block text-lg font-bold text-gray-900 mb-2">
-            Blog
-          </span>
-          <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-10">
-            Explore Articles and{" "}
-            <span className="block lg:inline ">Information</span>
-          </h2>
-          <p className="text-gray-500 text-lg">
-            Discover insightful articles and updates from our team.
-          </p>
-        </div>
-
         {/* Blog Cards */}
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-3">
           {blogs.map((blog) => (

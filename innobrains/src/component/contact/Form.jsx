@@ -1,45 +1,98 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
 
 const ContactUs = () => {
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    number: "",
+    message: "",
+  });
+
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  // Handle input changes
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value,
+    });
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      // Send form data to the backend API
+      const response = await axios.post(
+        "http://localhost:5000/api/contact",
+        formData
+      );
+      setSuccessMessage("Your message has been sent successfully!");
+      setErrorMessage(""); // Clear any previous errors
+      // Reset form fields
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        number: "",
+        message: "",
+      });
+    } catch (error) {
+      setErrorMessage("Failed to send the message. Please try again.");
+      setSuccessMessage(""); // Clear success message
+      console.error("Error sending message:", error);
+    }
+  };
+
   return (
     <div className="flex justify-center items-center px-4 bg-[#F9FAFB] py-16">
       <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 gap-16">
-        {/* Left Side: Form */}
         <div className="flex flex-col">
           <h2 className="text-4xl font-bold text-gray-900">Contact Us</h2>
           <p className="text-gray-600 mt-4 mb-12 text-lg">
             Our friendly team would love to hear from you.
           </p>
-          <form className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <form
+            className="grid grid-cols-1 md:grid-cols-2 gap-8"
+            onSubmit={handleSubmit}
+          >
             {/* First Name */}
             <div className="flex flex-col">
               <label
-                htmlFor="first-name"
+                htmlFor="firstName"
                 className="text-[#101010]  font-semibold"
               >
                 First Name
               </label>
               <input
                 type="text"
-                id="first-name"
+                id="firstName"
+                value={formData.firstName}
+                onChange={handleChange}
                 className="border border-[#5C5C5C] bg-[#F9FAFB] p-2 rounded-md focus:outline-none focus:border-[#103153]"
-                aria-label="First name"
+                required
               />
             </div>
 
             {/* Last Name */}
             <div className="flex flex-col">
               <label
-                htmlFor="last-name"
+                htmlFor="lastName"
                 className="text-[#101010]  font-semibold"
               >
                 Last Name
               </label>
               <input
                 type="text"
-                id="last-name"
+                id="lastName"
+                value={formData.lastName}
+                onChange={handleChange}
                 className="border border-[#5C5C5C] bg-[#F9FAFB] p-2 rounded-md focus:outline-none focus:border-[#103153]"
-                aria-label="Last name"
+                required
               />
             </div>
 
@@ -51,24 +104,25 @@ const ContactUs = () => {
               <input
                 type="email"
                 id="email"
+                value={formData.email}
+                onChange={handleChange}
                 className="border border-[#5C5C5C] bg-[#F9FAFB] p-2 rounded-md focus:outline-none focus:border-[#103153]"
-                aria-label="Email"
+                required
               />
             </div>
 
             {/* Phone Number */}
             <div className="col-span-1 md:col-span-2 flex flex-col">
-              <label
-                htmlFor="phone-number"
-                className="text-[#101010]  font-semibold"
-              >
+              <label htmlFor="number" className="text-[#101010]  font-semibold">
                 Phone Number
               </label>
               <input
                 type="text"
-                id="phone-number"
+                id="number"
+                value={formData.number}
+                onChange={handleChange}
                 className="border border-[#5C5C5C] bg-[#F9FAFB] p-2  rounded-md focus:outline-none focus:border-[#103153]"
-                aria-label="Phone number"
+                required
               />
             </div>
 
@@ -82,27 +136,40 @@ const ContactUs = () => {
               </label>
               <textarea
                 id="message"
+                value={formData.message}
+                onChange={handleChange}
                 className="border border-[#5C5C5C] bg-[#F9FAFB] p-2 rounded-md h-32 focus:outline-none focus:border-[#103153]"
-                aria-label="Message"
+                required
               ></textarea>
             </div>
 
             {/* Terms & Conditions */}
             <div className="flex items-center col-span-1 md:col-span-2">
-              <input type="checkbox" id="terms" className="mr-2" />
+              <input type="checkbox" id="terms" className="mr-2" required />
               <label htmlFor="terms" className="text-gray-600">
                 I accept the Terms
               </label>
             </div>
-          </form>
 
-          {/* Submit Button */}
-          <button className="block bg-[#F8AF2A] text-white px-3 py-2 rounded-full w-40 mt-6 text-center text-lg font-medium transition duration-300 ease-in-out hover:bg-yellow-600">
-            Contact Us
-          </button>
+            {/* Submit Button */}
+            <button
+              type="submit"
+              className="block bg-[#F8AF2A] text-white px-3 py-2 rounded-full w-40 mt-6 text-center text-lg font-medium transition duration-300 ease-in-out hover:bg-yellow-600"
+            >
+              Contact Us
+            </button>
+
+            {/* Success/Error Messages */}
+            {successMessage && (
+              <p className="text-green-500 mt-4">{successMessage}</p>
+            )}
+            {errorMessage && (
+              <p className="text-red-500 mt-4">{errorMessage}</p>
+            )}
+          </form>
         </div>
 
-        {/* Right Side: Map with matching height */}
+        {/* Right Side: Map */}
         <div className="h-full">
           <iframe
             className="w-full h-full min-h-[450px] rounded-md"

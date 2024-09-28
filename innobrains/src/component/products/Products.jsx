@@ -1,19 +1,20 @@
-import React from 'react'
-import Header from '../Header';
-import Footer from '../Footer';
-import ContactForm from '../ContactForm';
-import RecentWork from '../RecentWork';
-
+import React from "react";
+import Header from "../Header";
+import Footer from "../Footer";
+import ContactForm from "../ContactForm";
+import RecentWork from "../RecentWork";
+import InnovationSection from "./InnovationSection";
 
 function Products() {
   return (
     <div>
       <Header />
-   <RecentWork />
+      <InnovationSection />
+      <RecentWork />
       <ContactForm />
       <Footer />
     </div>
-  )
+  );
 }
 
 export default Products;

@@ -8,8 +8,7 @@ const contactSchema = new mongoose.Schema({
   message: { type: String, required: true },
 });
 
-// Check if the model is already compiled
-const Contact =
-  mongoose.models.Contact || mongoose.model("Contact", contactSchema);
+const ContactForm =
+  mongoose.models.ContactForm || mongoose.model("ContactForm", contactSchema);
 
-module.exports = Contact;
+module.exports = ContactForm;
