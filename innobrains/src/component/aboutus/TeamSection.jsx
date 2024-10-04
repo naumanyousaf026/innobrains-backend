@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDribbble, faLinkedinIn } from "@fortawesome/free-brands-svg-icons";
 import { faX } from "@fortawesome/free-solid-svg-icons";
@@ -10,15 +9,17 @@ const TeamSection = () => {
   useEffect(() => {
     const fetchTeamMembers = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/team"); // Adjust the URL as necessary
+        const response = await fetch("http://localhost:5000/api/team"); // Adjust the URL if necessary
         if (!response.ok) {
           throw new Error("Failed to fetch team members");
         }
         const data = await response.json();
-        // Map the data to include the images
+        // Map the data to include the images, setting a proper image path
         const membersWithImages = data.map((member) => ({
           ...member,
-          image: member.image || team_1, // Use a placeholder if no image is provided
+          image: `http://localhost:5000/images/${
+            member.image || "defaultImage.png"
+          }`,
         }));
         setTeamMembers(membersWithImages);
       } catch (error) {
@@ -46,9 +47,9 @@ const TeamSection = () => {
 
       {/* Grid of Team Members */}
       <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 px-6">
-        {teamMembers.map((member, index) => (
+        {teamMembers.map((member) => (
           <div
-            key={index}
+            key={member._id} // Use _id instead of index for uniqueness
             className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
           >
             <img
@@ -64,7 +65,7 @@ const TeamSection = () => {
               <p className="mt-4 text-gray-600">{member.description}</p>
             </div>
             <div className="flex justify-center space-x-4 py-3 bg-gray-50">
-              {member.social && member.social.linkedin && (
+              {member.social?.linkedin && (
                 <a
                   href={member.social.linkedin}
                   aria-label={`${member.name} LinkedIn`}
@@ -73,7 +74,7 @@ const TeamSection = () => {
                   <FontAwesomeIcon icon={faLinkedinIn} className="text-xl" />
                 </a>
               )}
-              {member.social && member.social.dribbble && (
+              {member.social?.dribbble && (
                 <a
                   href={member.social.dribbble}
                   aria-label={`${member.name} Dribbble`}

@@ -1,8 +1,6 @@
 import React from "react";
-// import pointer from "../../images/handpointer.png"; // Make sure this image path is correct
-// import check from "../../images/Checkmark.png";
-// import rank from "../../images/positive.png";
 import { Link } from "react-router-dom";
+import handpointer from "../images/handpointer.png"; // Import the image
 
 const GrowthSteps = () => {
   return (
@@ -25,16 +23,16 @@ const GrowthSteps = () => {
           <div className="absolute -top-[4.5rem] left-1/2 transform -translate-x-1/2 bg-[#F8AF2A] w-28 h-28 rounded-full flex items-center justify-center text-5xl font-bold poppins-thin p-16">
             01
           </div>
-          <div className="mt-10  ">
+          <div className="mt-10">
             <img
-              src={"#"}
+              src={handpointer} // Use the imported image
               alt="pointer icon"
               className="mx-auto mb-4 w-16 h-16"
             />
             <h3 className="text-lg font-semibold mb-2 poppins-thin ">
               Get ready for big results
             </h3>
-            <p className=" text-lg poppins-thin my-2">
+            <p className="text-lg poppins-thin my-2">
               Let our CRO experts guide or deliver you a pathway to higher
               conversions.
             </p>
@@ -48,14 +46,14 @@ const GrowthSteps = () => {
           </div>
           <div className="mt-10 ">
             <img
-              src={"#"}
+              src={handpointer} // Use the same imported image for the second step
               alt="pointer icon"
               className="mx-auto mb-4 w-16 h-16"
             />
             <h3 className="text-lg font-semibold mb-2 poppins-thin ">
               Get ready for big results
             </h3>
-            <p className="  text-lg poppins-thin my-2">
+            <p className="text-lg poppins-thin my-2">
               Let our CRO experts guide or deliver you a pathway to higher
               conversions.
             </p>
@@ -69,14 +67,14 @@ const GrowthSteps = () => {
           </div>
           <div className="mt-10 ">
             <img
-              src={"#"}
+              src={handpointer} // Use the same imported image for the third step
               alt="pointer icon"
               className="mx-auto mb-4 w-16 h-16"
             />
             <h3 className="text-lg font-semibold mb-2 poppins-thin poppins-thin">
               Watch your profits grow
             </h3>
-            <p className=" poppins-thin  text-lg my-2">
+            <p className="poppins-thin text-lg my-2">
               Sit back and relax as you make more money with no additional ad
               spend.
             </p>
