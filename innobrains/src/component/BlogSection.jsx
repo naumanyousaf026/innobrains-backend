@@ -10,6 +10,9 @@ const BlogSection = () => {
       try {
         const response = await fetch("http://localhost:5000/api/blog");
 
+        if (!response.ok) {
+          throw new Error("Failed to fetch blog data");
+        }
         const data = await response.json();
         setBlogs(data);
       } catch (error) {
@@ -28,13 +31,17 @@ const BlogSection = () => {
           {blogs.map((blog) => (
             <div
               key={blog._id}
-              className="bg-white rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105"
+              className="relative bg-white rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105 will-change-transform"
             >
               <img
                 className="w-full h-48 object-cover"
-                src={`/images/${blog.image}`}
-                alt="Blog Post"
+                src="http://localhost:5000/images/web3.png" // Absolute URL for testing
+                alt="Web 3 Image"
+                onError={(e) => {
+                  e.target.src = "/images/default-image.jpg"; // Fallback in case of error
+                }}
               />
+
               <div className="p-6 bg-[#FDFDFD]">
                 <div className="text-sm font-semibold text-[#103153] mb-2">
                   <span className="bg-[#EEEEEE] p-1">{blog.category}</span>{" "}

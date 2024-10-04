@@ -1,4 +1,6 @@
 const express = require("express");
+const multer = require("multer");
+const path = require("path");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const bodyParser = require("body-parser");
@@ -10,8 +12,8 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Serve static images
-app.use("/images", express.static("src/images")); // Ensure this path is correct
+// Serve static images from the 'src/images' directory
+app.use("/images", express.static(path.join(__dirname, "src/images")));
 
 // Import route files
 const reviewRoutes = require("./routes/review");
@@ -51,6 +53,21 @@ app.use("/api/team", teamRoutes);
 app.use("/api/achievements", achievementRoutes);
 app.use("/api/contact-info", contactInfoRoutes);
 app.use("/api/satisfie", satisfieRoutes);
+
+// Set storage engine for multer
+const storage = multer.diskStorage({
+  destination: "./uploads/",
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+
+// Initialize upload
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 1000000 }, // 1MB file size limit
+}).single("image");
+
 // Start the server
 const port = 5000;
 app.listen(port, () => {

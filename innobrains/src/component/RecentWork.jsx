@@ -11,7 +11,7 @@ function RecentWork() {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await fetch("http://localhost:5000/product"); // Update with your correct backend URL
+        const response = await fetch("http://localhost:5000/product"); // Ensure this URL matches your backend
         if (!response.ok) {
           throw new Error("Failed to fetch project data");
         }
@@ -50,7 +50,7 @@ function RecentWork() {
             >
               <div className="flex-1 bg-black text-white flex items-center justify-center h-64">
                 <img
-                  src={project.image}
+                  src={`http://localhost:5000/images/projectImage.png`} // Ensure this matches your backend setup
                   alt={project.name}
                   className="w-32 h-32 object-contain"
                 />
