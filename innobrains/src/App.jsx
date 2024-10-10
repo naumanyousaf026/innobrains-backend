@@ -9,10 +9,9 @@ import ClientCarousel from "./component/ClientCarousel";
 import ServicesSection from "./component/Servicescopmonent";
 import RecentWork from "./component/RecentWork";
 import BlogSection from "./component/BlogSection";
-
-import Wave from "./component/TopWave";
 import WideRange from "./component/WideRange";
-import BlogIntroSection from "./component/BlogInfoSection";
+import BlogInfoSection from "./component/BlogInfoSection";
+
 function App() {
   return (
     <>
@@ -20,13 +19,12 @@ function App() {
       <HeroSection />
       <ClientCarousel />
       <WideRange />
-      <ServicesSection limit={3} />
-      <Wave />
-      {/* <ServiceOverview /> */}
-      <RecentWork />
-      <BlogIntroSection />
-      <BlogSection />
+      <ServicesSection />
+      {/* <Wave /> */}
 
+      <RecentWork />
+      <BlogInfoSection />
+      <BlogSection />
       <ContactForm />
       <Footer />
     </>

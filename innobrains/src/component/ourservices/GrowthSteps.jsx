@@ -1,8 +1,32 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import pointer from "./../images/handpointer.png"; // Fallback image
 import { Link } from "react-router-dom";
-import handpointer from "../images/handpointer.png"; // Import the image
 
 const GrowthSteps = () => {
+  const [steps, setSteps] = useState([]);
+
+  // Fetch steps from the backend API
+  useEffect(() => {
+    const fetchSteps = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/growthsteps"); // Update the URL to match your API
+        const data = await response.json();
+        // Map the data to include the images
+        const stepsWithImages = data.map((step) => ({
+          ...step,
+          image: `http://localhost:5000/images/${
+            step.image || "handpointer.png"
+          }`,
+        }));
+        setSteps(stepsWithImages);
+      } catch (error) {
+        console.error("Error fetching steps:", error);
+      }
+    };
+
+    fetchSteps();
+  }, []);
+
   return (
     <section className="bg-[#F9FAFB] py-12">
       {/* Section Title */}
@@ -18,68 +42,27 @@ const GrowthSteps = () => {
 
       {/* Steps */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-[76rem] mx-auto mt-24 px-4 sm:px-6 lg:px-8">
-        {/* Step 1 */}
-        <div className="bg-[#D5E2EF] max-w-md p-8 shadow-md rounded-3xl text-center relative mx-auto">
-          <div className="absolute -top-[4.5rem] left-1/2 transform -translate-x-1/2 bg-[#F8AF2A] w-28 h-28 rounded-full flex items-center justify-center text-5xl font-bold poppins-thin p-16">
-            01
+        {steps.map((step) => (
+          <div
+            key={step._id}
+            className="bg-[#D5E2EF] max-w-md p-8 shadow-md rounded-3xl text-center relative mx-auto"
+          >
+            <div className="absolute -top-[4.5rem] left-1/2 transform -translate-x-1/2 bg-[#F8AF2A] w-28 h-28 rounded-full flex items-center justify-center text-5xl font-bold poppins-thin p-16">
+              {step.number < 10 ? `0${step.number}` : step.number}
+            </div>
+            <div className="mt-10">
+              <img
+                src={step.image || pointer} // Use a fallback image if the image is not available
+                alt={`Step ${step.number} icon`}
+                className="mx-auto mb-4 w-16 h-16"
+              />
+              <h3 className="text-lg font-semibold mb-2 poppins-thin">
+                {step.title}
+              </h3>
+              <p className="text-lg poppins-thin my-2">{step.description}</p>
+            </div>
           </div>
-          <div className="mt-10">
-            <img
-              src={handpointer} // Use the imported image
-              alt="pointer icon"
-              className="mx-auto mb-4 w-16 h-16"
-            />
-            <h3 className="text-lg font-semibold mb-2 poppins-thin ">
-              Get ready for big results
-            </h3>
-            <p className="text-lg poppins-thin my-2">
-              Let our CRO experts guide or deliver you a pathway to higher
-              conversions.
-            </p>
-          </div>
-        </div>
-
-        {/* Step 2 */}
-        <div className="bg-[#D5E2EF] max-w-md p-8 rounded-3xl shadow-md text-center relative mx-auto">
-          <div className="absolute -top-[4.5rem] left-1/2 transform -translate-x-1/2 bg-[#F8AF2A] w-28 h-28 rounded-full flex items-center justify-center text-5xl font-bold poppins-thin p-16">
-            02
-          </div>
-          <div className="mt-10 ">
-            <img
-              src={handpointer} // Use the same imported image for the second step
-              alt="pointer icon"
-              className="mx-auto mb-4 w-16 h-16"
-            />
-            <h3 className="text-lg font-semibold mb-2 poppins-thin ">
-              Get ready for big results
-            </h3>
-            <p className="text-lg poppins-thin my-2">
-              Let our CRO experts guide or deliver you a pathway to higher
-              conversions.
-            </p>
-          </div>
-        </div>
-
-        {/* Step 3 */}
-        <div className="bg-[#D5E2EF] max-w-md p-8 rounded-3xl shadow-md text-center relative mx-auto">
-          <div className="absolute -top-[4.5rem] left-1/2 transform -translate-x-1/2 bg-[#F8AF2A] w-28 h-28 rounded-full flex items-center justify-center text-5xl font-bold poppins-thin p-16">
-            03
-          </div>
-          <div className="mt-10 ">
-            <img
-              src={handpointer} // Use the same imported image for the third step
-              alt="pointer icon"
-              className="mx-auto mb-4 w-16 h-16"
-            />
-            <h3 className="text-lg font-semibold mb-2 poppins-thin poppins-thin">
-              Watch your profits grow
-            </h3>
-            <p className="poppins-thin text-lg my-2">
-              Sit back and relax as you make more money with no additional ad
-              spend.
-            </p>
-          </div>
-        </div>
+        ))}
       </div>
 
       {/* Contact Button */}

@@ -64,25 +64,23 @@ const TeamSection = () => {
               <p className="text-gray-500">{member.role}</p>
               <p className="mt-4 text-gray-600">{member.description}</p>
             </div>
-            <div className="flex justify-center space-x-4 py-3 bg-gray-50">
-              {member.social?.linkedin && (
-                <a
-                  href={member.social.linkedin}
-                  aria-label={`${member.name} LinkedIn`}
-                  className="text-gray-600 hover:text-gray-800"
-                >
-                  <FontAwesomeIcon icon={faLinkedinIn} className="text-xl" />
-                </a>
-              )}
-              {member.social?.dribbble && (
-                <a
-                  href={member.social.dribbble}
-                  aria-label={`${member.name} Dribbble`}
-                  className="text-gray-600 hover:text-gray-800"
-                >
-                  <FontAwesomeIcon icon={faDribbble} className="text-xl" />
-                </a>
-              )}
+            <div className="flex  space-x-4 py-3 ">
+              <a
+                href="#"
+                aria-label={`${member.name} LinkedIn`}
+                className="text-gray-600 hover:text-gray-800 ms-4"
+              >
+                <FontAwesomeIcon icon={faLinkedinIn} className="text-xl" />
+              </a>
+
+              <a
+                href="#"
+                aria-label={`${member.name} Dribbble`}
+                className="text-gray-600 hover:text-gray-800"
+              >
+                <FontAwesomeIcon icon={faDribbble} className="text-xl" />
+              </a>
+
               <a
                 href="#"
                 aria-label={`${member.name} More`}
