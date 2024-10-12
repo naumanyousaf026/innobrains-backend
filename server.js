@@ -28,7 +28,7 @@ const serviceRoutes = require("./routes/service");
 const satisfieRoutes = require("./routes/satisfieRoutes");
 const contactInfoRoutes = require("./routes/contactInfoRoutes");
 const growthStepRoutes = require("./routes/growthstep");
-
+const adminRoutes = require("./routes/admin");
 // Connect to MongoDB
 mongoose
   .connect("mongodb://localhost:27017/aboutUsApp", {
@@ -43,11 +43,12 @@ mongoose
   });
 
 // Prefix routes
+
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/partner", partnerRoutes);
 app.use("/api/blog", blogRoutes);
 app.use("/api/contact", contactFormRoutes);
-app.use("/product", productRoutes);
+app.use("/api/product", productRoutes);
 app.use("/api/service", serviceRoutes);
 app.use("/api/visitor", visitorRoutes);
 app.use("/api/team", teamRoutes);
@@ -55,6 +56,7 @@ app.use("/api/achievements", achievementRoutes);
 app.use("/api/contact-info", contactInfoRoutes);
 app.use("/api/satisfie", satisfieRoutes);
 app.use("/api/growthsteps", growthStepRoutes);
+app.use("/api/admin", adminRoutes);
 // Set storage engine for multer
 const storage = multer.diskStorage({
   destination: "./uploads/",

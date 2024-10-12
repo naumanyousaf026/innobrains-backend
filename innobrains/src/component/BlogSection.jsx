@@ -2,14 +2,13 @@ import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 
-const BlogSection = () => {
+const BlogSection = ({ limit }) => {
   const [blogs, setBlogs] = useState([]);
 
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
         const response = await fetch("http://localhost:5000/api/blog");
-
         if (!response.ok) {
           throw new Error("Failed to fetch blog data");
         }
@@ -23,25 +22,25 @@ const BlogSection = () => {
     fetchBlogs();
   }, []);
 
+  const displayedBlogs = limit ? blogs.slice(0, limit) : blogs;
+
   return (
     <div className="py-10 bg-[#F9FAFB]">
       <div className="container px-4 w-5/6 mx-auto">
-        {/* Blog Cards */}
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-3">
-          {blogs.map((blog) => (
+          {displayedBlogs.map((blog) => (
             <div
               key={blog._id}
               className="relative bg-white rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105 will-change-transform"
             >
               <img
                 className="w-full h-48 object-cover"
-                src="http://localhost:5000/images/web3.png" // Absolute URL for testing
-                alt="Web 3 Image"
+                src="http://localhost:5000/images/web3.png"
+                alt="Blog Image"
                 onError={(e) => {
-                  e.target.src = "/images/default-image.jpg"; // Fallback in case of error
+                  e.target.src = "/images/default-image.jpg";
                 }}
               />
-
               <div className="p-6 bg-[#FDFDFD]">
                 <div className="text-sm font-semibold text-[#103153] mb-2">
                   <span className="bg-[#EEEEEE] p-1">{blog.category}</span>{" "}
@@ -66,16 +65,13 @@ const BlogSection = () => {
             </div>
           ))}
         </div>
-
-        {/* Read All Button */}
-        <div className="mt-8 text-center">
-          <button
-            className="px-6 py-2 bg-[#F8AF2A] text-white rounded-full hover:bg-orange-600 transition duration-300"
-            aria-label="Read all blog posts"
-          >
-            Read All
-          </button>
-        </div>
+        {limit && blogs.length > limit && (
+          <div className="mt-8 text-center">
+            <button className="px-6 py-2 bg-[#F8AF2A] text-white rounded-full hover:bg-orange-600 transition duration-300">
+              See All Blogs
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

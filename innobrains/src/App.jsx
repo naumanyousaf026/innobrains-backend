@@ -5,7 +5,6 @@ import Footer from "./component/Footer";
 import HeroSection from "./component/HeroSection";
 import ContactForm from "./component/ContactForm";
 import ClientCarousel from "./component/ClientCarousel";
-
 import ServicesSection from "./component/Servicescopmonent";
 import RecentWork from "./component/RecentWork";
 import BlogSection from "./component/BlogSection";
@@ -19,12 +18,10 @@ function App() {
       <HeroSection />
       <ClientCarousel />
       <WideRange />
-      <ServicesSection />
-      {/* <Wave /> */}
-
-      <RecentWork />
+      <ServicesSection limit={3} /> {/* Show 3 services */}
+      <RecentWork limit={3} /> {/* Show 3 products */}
       <BlogInfoSection />
-      <BlogSection />
+      <BlogSection limit={3} /> {/* Show 3 blogs */}
       <ContactForm />
       <Footer />
     </>

@@ -22,7 +22,6 @@ const ServicesSection = ({ limit }) => {
     fetchServices();
   }, []);
 
-  // Determine how many services to display based on the `limit` prop
   const displayedServices =
     limit && !showAll ? services.slice(0, limit) : services;
 
@@ -43,7 +42,6 @@ const ServicesSection = ({ limit }) => {
                 />
               </div>
             </div>
-
             <h2 className="text-lg md:text-xl font-bold mb-4 poppins-thin">
               {service.name}
             </h2>
@@ -56,7 +54,6 @@ const ServicesSection = ({ limit }) => {
           </div>
         ))}
       </div>
-
       {limit && services.length > limit && (
         <div className="mt-8 text-center">
           <button
