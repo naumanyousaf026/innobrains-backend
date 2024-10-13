@@ -1,18 +1,15 @@
-// src/component/adminpanel/login.jsx
 import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate(); // Initialize navigate
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError(""); // Reset error state
-
     try {
       const response = await axios.post(
         "http://localhost:5000/api/admin/login",
@@ -22,43 +19,75 @@ const Login = () => {
         }
       );
       console.log("Login successful:", response.data);
-      // Navigate to the admin page after successful login
-      navigate("/admin"); // Redirect to the admin page
-    } catch (error) {
-      if (error.response) {
-        setError(error.response.data.message || "Login failed");
-      } else {
-        setError("An error occurred");
-      }
-      console.error("Login error:", error);
+
+      // Save token in localStorage and redirect to admin page
+      localStorage.setItem("authToken", response.data.token);
+      navigate("/admin"); // Redirect to admin page
+    } catch (err) {
+      console.error(
+        "Login error:",
+        err.response ? err.response.data : err.message
+      );
+      setError(
+        err.response ? err.response.data.message : "Something went wrong"
+      );
     }
   };
 
   return (
-    <div>
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        <div>
-          <label>Email:</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full">
+        <h2 className="text-2xl font-bold mb-6 text-center">Sign in</h2>
+
+        <form onSubmit={handleLogin}>
+          <div className="mb-4">
+            <label className="block text-gray-700">Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="email@email.com"
+              className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+              required
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-gray-700">Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter Password"
+              className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+              required
+            />
+          </div>
+
+          {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+
+          <div className="flex items-center mb-4">
+            <input
+              type="checkbox"
+              className="w-4 h-4 text-blue-600 border-gray-300 rounded"
+            />
+            <label className="ml-2 text-gray-700">Remember me</label>
+          </div>
+
+          <button className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg">
+            Sign In
+          </button>
+        </form>
+
+        <div className="text-right mt-4">
+          <Link
+            to="/resetpassword"
+            className="text-sm text-blue-600 hover:underline"
+          >
+            Forgot Password?
+          </Link>
         </div>
-        <div>
-          <label>Password:</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        {error && <p style={{ color: "red" }}>{error}</p>}
-        <button type="submit">Login</button>
-      </form>
+      </div>
     </div>
   );
 };
