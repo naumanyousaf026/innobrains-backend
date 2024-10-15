@@ -4,6 +4,10 @@ const path = require("path");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const dotenv = require("dotenv");
+
+// Load environment variables from .env file
+dotenv.config();
 
 const app = express();
 
@@ -43,7 +47,6 @@ mongoose
   });
 
 // Prefix routes
-
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/partner", partnerRoutes);
 app.use("/api/blog", blogRoutes);
@@ -57,6 +60,7 @@ app.use("/api/contact-info", contactInfoRoutes);
 app.use("/api/satisfie", satisfieRoutes);
 app.use("/api/growthsteps", growthStepRoutes);
 app.use("/api/admin", adminRoutes);
+
 // Set storage engine for multer
 const storage = multer.diskStorage({
   destination: "./uploads/",
@@ -72,7 +76,7 @@ const upload = multer({
 }).single("image");
 
 // Start the server
-const port = 5000;
+const port = process.env.PORT || 5000;
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });

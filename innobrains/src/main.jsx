@@ -11,42 +11,61 @@ import Products from "./component/products/Products.jsx";
 
 import Admin from "./component/adminpanel/Admin.jsx";
 import Teamform from "./component/adminpanel/Teamform.jsx";
-import ResetPassword from "./component/adminpanel/ResetPassword.jsx";
 
 import ProtectedRoute from "./component/adminpanel/ProtectedRoute.jsx";
 import Login from "./component/adminpanel/Login.jsx";
-
+import Signupform from "./component/adminpanel/Signupform.jsx";
+import EmailRequest from "./component/adminpanel/EmailRequest.jsx";
+import VerifyOTP from "./component/adminpanel/VerifyOTP.jsx";
+import ResetPassword from "./component/adminpanel/ResetPassword.jsx";
+import SuccessMessage from "./component/adminpanel/SuccessMessage.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
   },
   {
-    path: "about",
+    path: "/about",
     element: <About />,
   },
   {
-    path: "services",
+    path: "/services",
     element: <Services />,
   },
   {
-    path: "contact",
+    path: "/contact",
     element: <Contactus />,
   },
   {
-    path: "blog",
+    path: "/blog",
     element: <Blog />,
   },
   {
-    path: "products",
+    path: "/products",
     element: <Products />,
   },
   {
-    path: "login",
+    path: "/signupform",
+    element: <Signupform />,
+  },
+  {
+    path: "/login",
     element: <Login />,
   },
   {
-    path: "admin",
+    path: "/emailrequest", // Added EmailRequest route
+    element: <EmailRequest />,
+  },
+  {
+    path: "/verifyotp", // Added VerifyOTP route
+    element: <VerifyOTP />,
+  },
+  {
+    path: "/SuccessMessage",
+    element: <SuccessMessage />,
+  },
+  {
+    path: "/admin",
     element: (
       <ProtectedRoute>
         <Admin />
@@ -54,14 +73,19 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "teamform",
-    element: <Teamform />,
+    path: "/teamform",
+    element: (
+      <ProtectedRoute>
+        <Teamform />
+      </ProtectedRoute>
+    ),
   },
   {
-    path: "resetpassword",
+    path: "/resetpassword",
     element: <ResetPassword />,
   },
 ]);
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <RouterProvider router={router} />

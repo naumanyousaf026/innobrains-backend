@@ -1,10 +1,17 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const Admin = require("../models/admin"); // Assuming your admin model is correctly set up
+const Admin = require("../models/admin");
+const { sendOTPViaEmail } = require("../utils/otpService"); // Import OTP service
 require("dotenv").config();
 
 const router = express.Router();
+let otpStore = {}; // Temporarily store OTPs (Consider using Redis or a database in production)
+
+// Generate 4-digit OTP
+function generateOTP() {
+  return Math.floor(1000 + Math.random() * 9000); // 4-digit OTP
+}
 
 // Register Route
 router.post("/register", async (req, res) => {
@@ -17,32 +24,19 @@ router.post("/register", async (req, res) => {
   }
 
   try {
-    // Check if admin already exists
     const existingAdmin = await Admin.findOne({ email });
     if (existingAdmin) {
       return res.status(400).json({ message: "Email already exists" });
     }
 
-    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 12);
+    const newAdmin = new Admin({ name, email, password: hashedPassword });
 
-    // Create new admin
-    const newAdmin = new Admin({
-      name,
-      email,
-      password: hashedPassword,
-    });
-
-    // Save the new admin to the database
     await newAdmin.save();
 
     res.status(201).json({
       message: "Admin registered successfully",
-      admin: {
-        id: newAdmin._id,
-        name: newAdmin.name,
-        email: newAdmin.email,
-      },
+      admin: { id: newAdmin._id, name: newAdmin.name, email: newAdmin.email },
     });
   } catch (error) {
     console.error(error);
@@ -63,26 +57,22 @@ router.post("/login", async (req, res) => {
     if (!admin) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
+
     const isMatch = await bcrypt.compare(password, admin.password);
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    // Generate JWT
     const token = jwt.sign({ id: admin._id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
 
     res.json({
       token,
-      admin: {
-        id: admin._id,
-        name: admin.name,
-        email: admin.email,
-      },
+      admin: { id: admin._id, name: admin.name, email: admin.email },
     });
   } catch (error) {
-    console.error("Login error:", error); // Log the full error
+    console.error("Login error:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 });
@@ -98,22 +88,71 @@ router.post("/resetpassword", async (req, res) => {
   }
 
   try {
-    // Check if admin exists
     const admin = await Admin.findOne({ email });
     if (!admin) {
       return res.status(400).json({ message: "Admin not found" });
     }
 
-    // Hash new password
     const hashedPassword = await bcrypt.hash(newPassword, 12);
-
-    // Update password
     admin.password = hashedPassword;
     await admin.save();
 
     res.status(200).json({ message: "Password reset successfully" });
   } catch (error) {
-    console.error("Password reset error:", error); // Log the error
+    console.error("Password reset error:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
+
+// Send OTP Route
+router.post("/sendotp", async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ message: "Email is required" });
+  }
+
+  try {
+    const admin = await Admin.findOne({ email });
+    if (!admin) {
+      return res.status(400).json({ message: "Admin not found" });
+    }
+
+    const otp = generateOTP();
+    otpStore[email] = otp; // Store OTP temporarily, associate with the email
+
+    await sendOTPViaEmail(email, otp);
+
+    res.status(200).json({ message: "OTP sent to your email" });
+  } catch (error) {
+    console.error("Error sending OTP:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
+
+// Verify OTP Route
+router.post("/verifyotp", async (req, res) => {
+  const { email, otp } = req.body;
+
+  if (!email || !otp) {
+    return res.status(400).json({ message: "Email and OTP are required" });
+  }
+
+  try {
+    const storedOtp = otpStore[email];
+
+    if (!storedOtp) {
+      return res.status(400).json({ message: "OTP has expired or not sent" });
+    }
+
+    if (parseInt(otp, 10) !== storedOtp) {
+      return res.status(400).json({ message: "Invalid OTP" });
+    }
+
+    delete otpStore[email]; // Clear OTP after successful verification
+    res.status(200).json({ message: "OTP verified successfully" });
+  } catch (error) {
+    console.error("OTP verification error:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 });

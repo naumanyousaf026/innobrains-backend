@@ -35,58 +35,82 @@ const Login = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full">
-        <h2 className="text-2xl font-bold mb-6 text-center">Sign in</h2>
+    <div className="min-h-screen flex items-center justify-center bg-[#0f2a46]">
+      <div className="bg-white rounded-lg shadow-lg p-8 w-96">
+        <h2 className="text-2xl font-bold text-center mb-4 font-nunito">
+          Login to Account
+        </h2>
+        <p className="text-gray-500 text-center mb-6 font-nunito">
+          Please enter your email and password to continue
+        </p>
 
+        {/* Display Error Message */}
+        {error && (
+          <p className="text-red-500 text-sm mb-4 text-center">{error}</p>
+        )}
+
+        {/* Login Form */}
         <form onSubmit={handleLogin}>
+          {/* Email Input */}
           <div className="mb-4">
-            <label className="block text-gray-700">Email</label>
+            <label className="block text-gray-700 text-sm mb-2 font-nunito">
+              Email address:
+            </label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="email@email.com"
-              className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+              placeholder="esteban_schiller@gmail.com"
+              className="w-full px-4 py-2 border rounded-lg bg-gray-100 text-gray-700 focus:outline-none font-nunito"
               required
             />
           </div>
 
+          {/* Password Input */}
           <div className="mb-4">
-            <label className="block text-gray-700">Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter Password"
-              className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-              required
-            />
+            <label className="block text-gray-700 text-sm mb-2 font-nunito">
+              Password
+            </label>
+            <div className="relative">
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
+                className="w-full px-4 py-2 border rounded-lg bg-gray-100 text-gray-700 focus:outline-none font-nunito"
+                required
+              />
+            </div>
           </div>
 
-          {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-
-          <div className="flex items-center mb-4">
-            <input
-              type="checkbox"
-              className="w-4 h-4 text-blue-600 border-gray-300 rounded"
-            />
-            <label className="ml-2 text-gray-700">Remember me</label>
+          {/* Remember Password and Forget Password Link */}
+          <div className="flex items-center mb-6 font-nunito">
+            <input type="checkbox" className="mr-2" />
+            <label className="text-sm text-gray-700">Remember Password</label>
+            <Link
+              to="/emailrequest"
+              className="ml-auto text-sm text-gray-500 font-nunito"
+            >
+              Forget Password?
+            </Link>
           </div>
 
-          <button className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg">
+          {/* Sign In Button */}
+          <button className="w-full bg-[#1d3557] text-white font-bold py-2 px-4 rounded-lg hover:bg-[#16334a] transition duration-300 font-nunito">
             Sign In
           </button>
         </form>
 
-        <div className="text-right mt-4">
+        {/* Create Account Link */}
+        <p className="text-center text-sm text-gray-500 mt-4 font-nunito">
+          Don’t have an account?{" "}
           <Link
-            to="/resetpassword"
-            className="text-sm text-blue-600 hover:underline"
+            to="/Signupform"
+            className="text-blue-600 font-bold font-nunito"
           >
-            Forgot Password?
+            Create Account
           </Link>
-        </div>
+        </p>
       </div>
     </div>
   );
