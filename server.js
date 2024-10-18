@@ -61,19 +61,8 @@ app.use("/api/satisfie", satisfieRoutes);
 app.use("/api/growthsteps", growthStepRoutes);
 app.use("/api/admin", adminRoutes);
 
-// Set storage engine for multer
-const storage = multer.diskStorage({
-  destination: "./uploads/",
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
-  },
-});
-
-// Initialize upload
-const upload = multer({
-  storage: storage,
-  limits: { fileSize: 1000000 }, // 1MB file size limit
-}).single("image");
+app.use("/uploads", express.static(path.join(__dirname, "src/uploads")));
+app.use("/blogImages", express.static(path.join(__dirname, "blogImages")));
 
 // Start the server
 const port = process.env.PORT || 5000;

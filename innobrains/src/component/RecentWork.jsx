@@ -50,7 +50,7 @@ function RecentWork() {
             >
               <div className="flex-1 bg-black text-white flex items-center justify-center h-64">
                 <img
-                  src={`http://localhost:5000/images/projectImage.png`} // Ensure this matches your backend setup
+                  src={`http://localhost:5000/uploads/${project.image}`} // Updated image path
                   alt={project.name}
                   className="w-32 h-32 object-contain"
                 />

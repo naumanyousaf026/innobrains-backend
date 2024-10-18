@@ -1,23 +1,45 @@
-// src/component/adminpanel/Admin.jsx
-// src/component/adminpanel/Admin.jsx
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
+import Sidebar from "./Sidebar";
+import Header from "./Header";
+import ProductSection from "./ProductSection";
 import Dashboard from "./Dashboard";
-import ResetPassword from "./ResetPassword";
+import Blog from "./Blog";
+
 const Admin = () => {
-  const navigate = useNavigate();
+  const [section, setSection] = useState("products"); // Default section
+  const navigate = useNavigate(); // Hook for navigation
 
   const handleLogout = () => {
-    // Token ko localStorage se remove karein
+    // Remove token from localStorage
     localStorage.removeItem("authToken");
 
-    // Logout hone ke baad login page pe redirect karein
+    // Redirect to login page
     navigate("/login");
   };
+
   return (
-    <div>
-      <Dashboard />
-      <button onClick={handleLogout}>Logout</button>
+    <div className="flex">
+      {/* Pass handleLogout to Sidebar */}
+      <Sidebar setSection={setSection} handleLogout={handleLogout} />
+      <div className="flex-1">
+        <Header />
+        <div className="p-6">
+          {section === "dashboard" && (
+            <div>
+              <Dashboard />
+            </div>
+          )}
+          {section === "products" && <ProductSection />}
+          {section === "services" && <div>Services Section</div>}
+          {section === "blogs" && (
+            <div>
+              <Blog />
+            </div>
+          )}
+          {section === "team" && <div>Team Section</div>}
+        </div>
+      </div>
     </div>
   );
 };

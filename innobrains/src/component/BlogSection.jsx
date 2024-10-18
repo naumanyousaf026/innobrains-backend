@@ -35,8 +35,8 @@ const BlogSection = ({ limit }) => {
             >
               <img
                 className="w-full h-48 object-cover"
-                src="http://localhost:5000/images/web3.png"
-                alt="Blog Image"
+                src={`http://localhost:5000${blog.image}`}
+                alt="Blog"
                 onError={(e) => {
                   e.target.src = "/images/default-image.jpg";
                 }}
@@ -44,16 +44,16 @@ const BlogSection = ({ limit }) => {
               <div className="p-6 bg-[#FDFDFD]">
                 <div className="text-sm font-semibold text-[#103153] mb-2">
                   <span className="bg-[#EEEEEE] p-1">{blog.category}</span>{" "}
-                  <span className="ms-2">5 min read</span>
+                  <span className="ms-2">{blog.duration}</span>
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-2">
-                  {blog.name}
+                  {blog.title}
                 </h3>
                 <p className="text-gray-600 mb-4">{blog.description}</p>
                 <a
                   href="#"
                   className="text-indigo-600 hover:text-indigo-800 font-semibold"
-                  aria-label={`Read more about ${blog.name}`}
+                  aria-label={`Read more about ${blog.title}`}
                 >
                   Read more
                   <FontAwesomeIcon

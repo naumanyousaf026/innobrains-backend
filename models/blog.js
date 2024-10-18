@@ -1,16 +1,35 @@
-const mongoose = require("mongoose"); // Importing Mongoose for MongoDB interactions
+const mongoose = require("mongoose");
 
-// Define the schema for the blog data
-const blogSchema = new mongoose.Schema({
-  image: { type: String }, // Optional field for the blog image, allows storing image URL or path
-  name: { type: String, required: true }, // Name of the blog post, required field
-  description: { type: String, required: true }, // Description of the blog post, required field
-  category: { type: String, required: true }, // Category of the blog post, required field
-  tags: [{ type: String }], // Optional field for tags, stored as an array of strings
-});
+const blogSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    duration: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    category: {
+      type: String,
+      required: true,
+      enum: ["Development", "Design", "Marketing"], // Valid categories
+    },
+    description: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    image: {
+      type: String, // Store the image path or URL
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
 
-// Create the Blog model using the schema
 const Blog = mongoose.model("Blog", blogSchema);
 
-// Export the Blog model for use in other parts of the application
 module.exports = Blog;
