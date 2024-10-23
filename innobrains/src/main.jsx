@@ -10,7 +10,7 @@ import Blog from "./component/blog/Blog.jsx";
 import Products from "./component/products/Products.jsx";
 
 import Admin from "./component/adminpanel/Admin.jsx";
-import Teamform from "./component/adminpanel/Teamform.jsx";
+
 import ProtectedRoute from "./component/adminpanel/ProtectedRoute.jsx";
 import Login from "./component/adminpanel/Login.jsx";
 import Signupform from "./component/adminpanel/Signupform.jsx";
@@ -71,14 +71,14 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
   },
-  {
-    path: "/teamform",
-    element: (
-      <ProtectedRoute>
-        <Teamform />
-      </ProtectedRoute>
-    ),
-  },
+  // {
+  //   path: "/teamform",
+  //   element: (
+  //     <ProtectedRoute>
+  //       <Teamform />
+  //     </ProtectedRoute>
+  //   ),
+  // },
   {
     path: "/resetpassword",
     element: <ResetPassword />,

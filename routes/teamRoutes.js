@@ -1,13 +1,36 @@
-// teamRoutes.js
 const express = require("express");
+const multer = require("multer");
 const router = express.Router();
 const Team = require("../models/team");
+const path = require("path");
 
-// CREATE a new team member
-// teamRoutes.js
-router.post("/", async (req, res) => {
+// Set up multer for file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "./TeamImages"); // Folder path for saving images
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, uniqueSuffix + path.extname(file.originalname)); // Store with unique filename
+  },
+});
+
+const upload = multer({ storage: storage });
+
+// CREATE a new team member with image upload
+router.post("/", upload.single("image"), async (req, res) => {
   try {
-    const newTeamMember = new Team(req.body);
+    // Create new team member, automatically setting the name as firstName + lastName
+    const newTeamMember = new Team({
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      gender: req.body.gender,
+      role: req.body.role,
+      description: req.body.description,
+      email: req.body.email, // Capture email from request body
+      image: req.file ? req.file.filename : undefined, // Save image path if uploaded
+    });
+
     const savedTeamMember = await newTeamMember.save();
     res.status(201).json(savedTeamMember);
   } catch (err) {
@@ -38,16 +61,33 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// UPDATE a team member by ID
-router.put("/:id", async (req, res) => {
+// UPDATE a team member by ID with image upload
+router.put("/:id", upload.single("image"), async (req, res) => {
   try {
+    // Prepare updated data, keeping firstName and lastName separate
+    const updatedData = {
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      gender: req.body.gender,
+      role: req.body.role,
+      description: req.body.description,
+      email: req.body.email, // Capture email from request body
+    };
+
+    // If there's a new image, update the image path
+    if (req.file) {
+      updatedData.image = `/TeamImages/${req.file.filename}`;
+    }
+
     const updatedTeamMember = await Team.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      updatedData,
       { new: true }
     );
+
     if (!updatedTeamMember)
       return res.status(404).json({ error: "Team member not found" });
+
     res.json(updatedTeamMember);
   } catch (err) {
     res.status(400).json({ error: "Failed to update team member" });

@@ -5,7 +5,8 @@ import Header from "./Header";
 import ProductSection from "./ProductSection";
 import Dashboard from "./Dashboard";
 import Blog from "./Blog";
-
+import Team from "./Team";
+import Service from "./Service";
 const Admin = () => {
   const [section, setSection] = useState("products"); // Default section
   const navigate = useNavigate(); // Hook for navigation
@@ -31,13 +32,21 @@ const Admin = () => {
             </div>
           )}
           {section === "products" && <ProductSection />}
-          {section === "services" && <div>Services Section</div>}
+          {section === "services" && (
+            <div>
+              <Service />
+            </div>
+          )}
           {section === "blogs" && (
             <div>
               <Blog />
             </div>
           )}
-          {section === "team" && <div>Team Section</div>}
+          {section === "team" && (
+            <div>
+              <Team />
+            </div>
+          )}
         </div>
       </div>
     </div>

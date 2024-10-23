@@ -36,9 +36,9 @@ const ServicesSection = ({ limit }) => {
             <div className="flex mb-4">
               <div className="p-4 rounded">
                 <img
-                  src={`http://localhost:5000/images/service.jpeg`}
+                  src={`http://localhost:5000/ServiceImage/${service.image}`}
                   alt={service.name}
-                  className="w-12 h-12"
+                  className="w-16 h-16 rounded-md"
                 />
               </div>
             </div>

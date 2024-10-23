@@ -1,7 +1,22 @@
 // routes/service.js
 const express = require("express");
-const Service = require("../models/service"); // Adjust the path if needed
+const multer = require("multer");
+const Service = require("../models/service");
+const path = require("path");
+
 const router = express.Router();
+
+// Configure multer for file uploads to the ServiceImage folder
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, "../ServiceImage")); // Ensure the full path is used
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
 
 // GET all services
 router.get("/", async (req, res) => {
@@ -24,10 +39,10 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// CREATE a new service
-router.post("/", async (req, res) => {
+// CREATE a new service with image upload
+router.post("/", upload.single("image"), async (req, res) => {
   const service = new Service({
-    image: req.body.image,
+    image: req.file ? req.file.filename : null,
     name: req.body.name,
     description: req.body.description,
   });
@@ -41,9 +56,15 @@ router.post("/", async (req, res) => {
 });
 
 // UPDATE a service by ID
-router.put("/:id", async (req, res) => {
+router.put("/:id", upload.single("image"), async (req, res) => {
+  const updateData = {
+    name: req.body.name,
+    description: req.body.description,
+    image: req.file ? req.file.path : null, // Handle image upload on update
+  };
+
   try {
-    const service = await Service.findByIdAndUpdate(req.params.id, req.body, {
+    const service = await Service.findByIdAndUpdate(req.params.id, updateData, {
       new: true,
       runValidators: true,
     });

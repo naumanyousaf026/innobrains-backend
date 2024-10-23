@@ -17,9 +17,9 @@ const TeamSection = () => {
         // Map the data to include the images, setting a proper image path
         const membersWithImages = data.map((member) => ({
           ...member,
-          image: `http://localhost:5000/images/${
+          image: `http://localhost:5000/TeamImages/${
             member.image || "defaultImage.png"
-          }`,
+          }`, // Ensure the path points to the correct image folder
         }));
         setTeamMembers(membersWithImages);
       } catch (error) {
@@ -64,7 +64,7 @@ const TeamSection = () => {
               <p className="text-gray-500">{member.role}</p>
               <p className="mt-4 text-gray-600">{member.description}</p>
             </div>
-            <div className="flex  space-x-4 py-3 ">
+            <div className="flex space-x-4 py-3">
               <a
                 href="#"
                 aria-label={`${member.name} LinkedIn`}

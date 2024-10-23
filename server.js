@@ -17,6 +17,10 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Serve static images from the 'src/images' directory
+// Serve static images from the 'TeamImages' directory
+app.use("/TeamImages", express.static(path.join(__dirname, "TeamImages")));
+app.use("/ServiceImage", express.static(path.join(__dirname, "ServiceImage")));
+
 app.use("/images", express.static(path.join(__dirname, "src/images")));
 
 // Import route files
