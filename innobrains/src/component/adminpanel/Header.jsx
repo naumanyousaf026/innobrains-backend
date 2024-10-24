@@ -1,12 +1,19 @@
 import React from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate hook
 import { BellIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline"; // Import icons
-// import arsid from "../../images/ar";
 
 const Header = () => {
+  const navigate = useNavigate(); // Initialize navigate
+
+  // Function to handle profile image click
+  const goToProfile = () => {
+    navigate("/ProfilePage"); // Navigate to the ProfilePage
+  };
+
   return (
     <div className="w-full bg-white p-4 shadow-md flex justify-between items-center">
       {/* Left Side - Search Bar */}
-      <div className="flex items-center gap-2  max-w-lg">
+      <div className="flex items-center gap-2 max-w-lg">
         <div className="flex items-center border rounded-md w-full">
           <MagnifyingGlassIcon className="h-6 w-6 text-gray-500 ml-3" />
           <input
@@ -28,7 +35,11 @@ const Header = () => {
         </div>
 
         {/* User Profile Image */}
-        <div className="relative">
+        <div
+          className="relative"
+          onClick={goToProfile}
+          style={{ cursor: "pointer" }}
+        >
           <img
             src={
               "https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o="

@@ -38,11 +38,11 @@ const ServicesSection = ({ limit }) => {
                 <img
                   src={`http://localhost:5000/ServiceImage/${service.image}`}
                   alt={service.name}
-                  className="w-16 h-16 rounded-md"
+                  className="w-20 h-20 rounded-md"
                 />
               </div>
             </div>
-            <h2 className="text-lg md:text-xl font-bold mb-4 poppins-thin">
+            <h2 className="text-lg md:text-4xl font-semibold mb-4 poppins-thin">
               {service.name}
             </h2>
             <p className="text-gray-300 mb-6 text-sm md:text-base poppins-thin">

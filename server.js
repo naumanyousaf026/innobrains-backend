@@ -37,6 +37,7 @@ const satisfieRoutes = require("./routes/satisfieRoutes");
 const contactInfoRoutes = require("./routes/contactInfoRoutes");
 const growthStepRoutes = require("./routes/growthstep");
 const adminRoutes = require("./routes/admin");
+
 // Connect to MongoDB
 mongoose
   .connect("mongodb://localhost:27017/aboutUsApp", {

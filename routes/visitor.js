@@ -22,7 +22,7 @@ router.post("/submit", async (req, res) => {
 });
 
 // GET route to retrieve all visitors
-router.get("/visitors", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const visitors = await Visitor.find();
     res.status(200).json(visitors);
@@ -32,7 +32,7 @@ router.get("/visitors", async (req, res) => {
 });
 
 // GET route to retrieve a single visitor by ID
-router.get("/visitors/:id", async (req, res) => {
+router.get("/:id", async (req, res) => {
   try {
     const visitor = await Visitor.findById(req.params.id);
     if (!visitor) {
@@ -45,7 +45,7 @@ router.get("/visitors/:id", async (req, res) => {
 });
 
 // PUT route to update visitor data by ID
-router.put("/visitors/:id", async (req, res) => {
+router.put("/:id", async (req, res) => {
   const { FirstName, LastName, email, number, message } = req.body;
 
   try {
@@ -66,7 +66,7 @@ router.put("/visitors/:id", async (req, res) => {
 });
 
 // DELETE route to remove a visitor by ID
-router.delete("/visitors/:id", async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
     const deletedVisitor = await Visitor.findByIdAndDelete(req.params.id);
     if (!deletedVisitor) {

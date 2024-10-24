@@ -1,17 +1,36 @@
-[
-  {
-    "icon": "fas fa-laptop-code",
-    "name": "Web Development",
-    "description": "Building responsive and dynamic websites with modern web technologies."
-  },
-  {
-    "icon": "fas fa-mobile-alt",
-    "name": "Mobile App Development",
-    "description": "Creating feature-rich and user-friendly mobile applications for both Android and iOS."
-  },
-  {
-    "icon": "fas fa-cloud",
-    "name": "Cloud Services",
-    "description": "Providing scalable and secure cloud solutions for your business infrastructure."
-  }
-]
+{
+  "services": [
+    {
+      "name": "Tech Consultation",
+      "description": "Get expert advice on technical challenges, system architecture, and development strategies to accelerate your project's success."
+    },
+    {
+      "name": "Digital Marketing",
+      "description": "Enhance your brand's digital presence with targeted campaigns, SEO, and social media strategies that drive measurable results."
+    },
+    {
+      "name": "UI/UX Design",
+      "description": "Create intuitive and engaging user experiences with thoughtful, user-centered design tailored to your audience and goals."
+    },
+    {
+      "name": "Digital Consultancy",
+      "description": "Leverage industry insights and digital trends to optimize your business strategies, ensuring you stay ahead in a digital-first world."
+    },
+    {
+      "name": "Product Design",
+      "description": "Transform ideas into functional products with a design process that balances creativity, usability, and market demands."
+    },
+    {
+      "name": "Software Development",
+      "description": "Build scalable, high-performance software solutions tailored to your specific business needs using the latest technologies."
+    },
+    {
+      "name": "AI Data Integration",
+      "description": "Integrate AI-driven data analytics and automation into your workflows to optimize performance and streamline decision-making."
+    },
+    {
+      "name": "Web Development",
+      "description": "Develop modern, responsive websites with robust functionality and user-friendly interfaces, optimized for all devices."
+    }
+  ]
+}

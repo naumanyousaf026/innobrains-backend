@@ -60,6 +60,13 @@ const Sidebar = ({ setSection, handleLogout }) => {
             <UsersIcon className="h-6 w-6" />
             Team
           </button>
+          <button
+            onClick={() => setSection("visitor")}
+            className="flex items-center gap-3 p-2 text-lg font-medium hover:bg-blue-500 hover:text-white rounded-md"
+          >
+            <UsersIcon className="h-6 w-6" />
+            Users
+          </button>
         </div>
       </div>
 

@@ -18,6 +18,7 @@ import EmailRequest from "./component/adminpanel/EmailRequest.jsx";
 import VerifyOTP from "./component/adminpanel/VerifyOTP.jsx";
 import ResetPassword from "./component/adminpanel/ResetPassword.jsx";
 import SuccessMessage from "./component/adminpanel/SuccessMessage.jsx";
+import PageNotFound from "./component/adminpanel/PageNotFound.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -52,16 +53,20 @@ const router = createBrowserRouter([
     element: <Login />,
   },
   {
-    path: "/emailrequest", // Added EmailRequest route
+    path: "/emailrequest",
     element: <EmailRequest />,
   },
   {
-    path: "/verifyotp", // Added VerifyOTP route
+    path: "/verifyotp",
     element: <VerifyOTP />,
   },
   {
     path: "/SuccessMessage",
     element: <SuccessMessage />,
+  },
+  {
+    path: "/resetpassword",
+    element: <ResetPassword />,
   },
   {
     path: "/admin",
@@ -71,17 +76,14 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
   },
-  // {
-  //   path: "/teamform",
-  //   element: (
-  //     <ProtectedRoute>
-  //       <Teamform />
-  //     </ProtectedRoute>
-  //   ),
-  // },
   {
-    path: "/resetpassword",
-    element: <ResetPassword />,
+    path: "/404",
+    element: <PageNotFound />,
+  },
+  // Wildcard route for 404 handling
+  {
+    path: "*",
+    element: <PageNotFound />, // Wildcard path for any undefined routes
   },
 ]);
 
