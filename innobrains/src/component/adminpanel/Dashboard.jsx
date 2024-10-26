@@ -1,5 +1,4 @@
-// export default Dashboard;
-import React, { useState } from "react";
+import React from "react";
 import { Line, Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -12,18 +11,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faBars,
-  faBell,
-  faSearch,
-  faUserCircle,
-  faTachometerAlt,
-  faCubes,
-  faPuzzlePiece,
-  faTable,
-} from "@fortawesome/free-solid-svg-icons"; // Importing icons
-import { Link } from "react-router-dom";
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -36,7 +24,6 @@ ChartJS.register(
 );
 
 const Dashboard = () => {
-  // Sample data for charts
   const salesData = {
     labels: ["May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
     datasets: [
@@ -65,8 +52,7 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen flex bg-gray-100">
-      {/* Dashboard Content */}
-      <div className="p-6">
+      <div className="p-6 flex-1">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">Dashboard</h1>
           <div className="flex space-x-4">
@@ -78,7 +64,7 @@ const Dashboard = () => {
         </div>
 
         {/* Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* Card 1 */}
           <div className="bg-purple-600 text-white p-6 rounded-lg shadow">
             <h2 className="text-xl font-bold">Tasks Completed</h2>
@@ -135,51 +121,23 @@ const Dashboard = () => {
         <div className="bg-white p-6 mt-6 rounded-lg shadow">
           <h2 className="text-xl font-bold">Progress Track</h2>
           <ul className="mt-4 space-y-4">
-            <li className="flex items-center justify-between">
-              <span>Argon Design System</span>
-              <div className="w-64 bg-gray-200 rounded-full h-2">
-                <div
-                  className="bg-purple-500 h-full rounded-full"
-                  style={{ width: "50%" }}
-                ></div>
-              </div>
-            </li>
-            <li className="flex items-center justify-between">
-              <span>Angular Now UI Kit PRO</span>
-              <div className="w-64 bg-gray-200 rounded-full h-2">
-                <div
-                  className="bg-red-500 h-full rounded-full"
-                  style={{ width: "70%" }}
-                ></div>
-              </div>
-            </li>
-            <li className="flex items-center justify-between">
-              <span>Black Dashboard</span>
-              <div className="w-64 bg-gray-200 rounded-full h-2">
-                <div
-                  className="bg-orange-500 h-full rounded-full"
-                  style={{ width: "30%" }}
-                ></div>
-              </div>
-            </li>
-            <li className="flex items-center justify-between">
-              <span>React Material Dashboard</span>
-              <div className="w-64 bg-gray-200 rounded-full h-2">
-                <div
-                  className="bg-blue-500 h-full rounded-full"
-                  style={{ width: "40%" }}
-                ></div>
-              </div>
-            </li>
-            <li className="flex items-center justify-between">
-              <span>Vue Paper UI Kit PRO</span>
-              <div className="w-64 bg-gray-200 rounded-full h-2">
-                <div
-                  className="bg-green-500 h-full rounded-full"
-                  style={{ width: "60%" }}
-                ></div>
-              </div>
-            </li>
+            {[
+              { name: "Argon Design System", progress: "50%" },
+              { name: "Angular Now UI Kit PRO", progress: "70%" },
+              { name: "Black Dashboard", progress: "30%" },
+              { name: "React Material Dashboard", progress: "40%" },
+              { name: "Vue Paper UI Kit PRO", progress: "60%" },
+            ].map((item) => (
+              <li key={item.name} className="flex items-center justify-between">
+                <span>{item.name}</span>
+                <div className="w-64 bg-gray-200 rounded-full h-2">
+                  <div
+                    className="bg-purple-500 h-full rounded-full"
+                    style={{ width: item.progress }}
+                  ></div>
+                </div>
+              </li>
+            ))}
           </ul>
         </div>
       </div>

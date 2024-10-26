@@ -1,21 +1,40 @@
-import React from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate hook
-import { BellIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline"; // Import icons
+import {
+  BellIcon,
+  MagnifyingGlassCircleIcon,
+  MagnifyingGlassIcon,
+} from "@heroicons/react/24/outline";
+import { useNavigate } from "react-router-dom";
+const Header = ({ setSidebarOpen }) => {
+  const navigate = useNavigate();
 
-const Header = () => {
-  const navigate = useNavigate(); // Initialize navigate
-
-  // Function to handle profile image click
   const goToProfile = () => {
-    navigate("/ProfilePage"); // Navigate to the ProfilePage
+    navigate("/ProfilePage");
   };
 
   return (
     <div className="w-full bg-white p-4 shadow-md flex justify-between items-center">
-      {/* Left Side - Search Bar */}
+      <button
+        onClick={() => setSidebarOpen((prev) => !prev)}
+        className="md:hidden p-2"
+      >
+        {/* Hamburger Icon for mobile */}
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M4 6h16M4 12h16m-7 6h7"
+          />
+        </svg>
+      </button>
       <div className="flex items-center gap-2 max-w-lg">
         <div className="flex items-center border rounded-md w-full">
-          <MagnifyingGlassIcon className="h-6 w-6 text-gray-500 ml-3" />
+          <MagnifyingGlassIcon className="h-6 w-6 text-gray-500 " />
           <input
             type="text"
             placeholder="Search"
@@ -24,9 +43,7 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Right Side - Notification Icon and User Profile Image */}
       <div className="flex items-center gap-4">
-        {/* Notification Icon */}
         <div className="relative">
           <BellIcon className="h-6 w-6 text-gray-500" />
           <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1">
@@ -34,12 +51,7 @@ const Header = () => {
           </span>
         </div>
 
-        {/* User Profile Image */}
-        <div
-          className="relative"
-          onClick={goToProfile}
-          style={{ cursor: "pointer" }}
-        >
+        <div onClick={goToProfile} style={{ cursor: "pointer" }}>
           <img
             src={
               "https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o="

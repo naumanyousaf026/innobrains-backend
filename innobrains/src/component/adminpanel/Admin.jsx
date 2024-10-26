@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
+import { useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 import ProductSection from "./ProductSection";
@@ -10,51 +10,35 @@ import Service from "./Service";
 import Visitor from "./Visitor";
 
 const Admin = () => {
-  const [section, setSection] = useState("products"); // Default section
-  const navigate = useNavigate(); // Hook for navigation
+  const [section, setSection] = useState("products");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleLogout = () => {
-    // Remove token from localStorage
     localStorage.removeItem("authToken");
-
-    // Redirect to login page
     navigate("/login");
   };
 
   return (
     <div className="flex">
-      {/* Pass handleLogout to Sidebar */}
-      <Sidebar setSection={setSection} handleLogout={handleLogout} />
-      <div className="flex-1">
-        <Header />
+      <Sidebar
+        setSection={setSection}
+        handleLogout={handleLogout}
+        isOpen={sidebarOpen}
+      />
+      <div
+        className={`flex-1 transition-all duration-300 ${
+          sidebarOpen ? "ml-48" : "ml-0"
+        } md:ml-64`} // Adjust margin for the sidebar width
+      >
+        <Header setSidebarOpen={setSidebarOpen} />
         <div className="p-6">
-          {section === "dashboard" && (
-            <div>
-              <Dashboard />
-            </div>
-          )}
-
+          {section === "dashboard" && <Dashboard />}
           {section === "products" && <ProductSection />}
-          {section === "services" && (
-            <div>
-              <Service />
-            </div>
-          )}
-          {section === "blogs" && (
-            <div>
-              <Blog />
-            </div>
-          )}
-          {section === "team" && (
-            <div>
-              <Team />
-            </div>
-          )}
-          {section === "visitor" && (
-            <div>
-              <Visitor />
-            </div>
-          )}
+          {section === "services" && <Service />}
+          {section === "blogs" && <Blog />}
+          {section === "team" && <Team />}
+          {section === "visitor" && <Visitor />}
         </div>
       </div>
     </div>

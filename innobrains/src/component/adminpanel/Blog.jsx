@@ -6,7 +6,7 @@ import BlogForm from "./BlogForm";
 const Blog = () => {
   const [blogs, setBlogs] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const blogsPerPage = 9;
+  const blogsPerPage = 9; // Total blogs per page
   const [showForm, setShowForm] = useState(false);
   const [editBlog, setEditBlog] = useState(null);
 
@@ -65,6 +65,14 @@ const Blog = () => {
     fetchBlogs();
   };
 
+  // Function to truncate the description
+  const truncateDescription = (description, maxLength = 100) => {
+    if (description.length > maxLength) {
+      return description.substring(0, maxLength) + "...";
+    }
+    return description;
+  };
+
   return (
     <div className="min-h-screen p-6 bg-gray-100">
       <div className="flex justify-between items-center mb-6">
@@ -85,60 +93,48 @@ const Blog = () => {
         <BlogForm blog={editBlog} onClose={handleFormClose} />
       ) : (
         <>
-          <div className="max-w-7xl mx-auto bg-white shadow-md rounded-lg">
-            <div className="overflow-x-auto">
-              <table className="table-auto w-full text-left">
-                <thead className="border-b-1">
-                  <tr>
-                    <th className="px-4 py-2">Image</th>
-                    <th className="px-4 py-2">Title</th>
-                    <th className="px-4 py-2">Category</th>
-                    <th className="px-4 py-2">Duration</th>
-                    <th className="px-4 py-2">Description</th>
-                    <th className="px-4 py-2">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {currentBlogs.map((blog) => (
-                    <tr key={blog._id} className="border-t">
-                      <td className="px-4 py-2">
-                        <img
-                          src={`http://localhost:5000${blog.image}`} // Fixed image path
-                          alt={blog.title}
-                          className="w-16 h-16 rounded-md"
-                          onError={(e) => {
-                            e.target.src = "/images/default-image.jpg"; // Optional: Handle image error
-                          }}
-                        />
-                      </td>
-                      <td className="px-4 py-2">{blog.title}</td>
-                      <td className="px-4 py-2">{blog.category}</td>
-                      <td className="px-4 py-2">{blog.duration}</td>
-                      <td className="px-4 py-2">{blog.description}</td>
-                      <td className="px-4 py-2 flex items-center space-x-2">
-                        <button
-                          onClick={() => handleEdit(blog)}
-                          className="text-yellow-500 hover:text-yellow-600"
-                        >
-                          <FontAwesomeIcon icon={faEdit} />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(blog._id)}
-                          className="text-red-500 hover:text-red-600"
-                        >
-                          <FontAwesomeIcon icon={faTrashCan} />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {currentBlogs.map((blog) => (
+              <div
+                key={blog._id}
+                className="bg-white rounded-lg shadow-md p-4 flex flex-col"
+              >
+                <img
+                  src={`http://localhost:5000${blog.image}`}
+                  alt={blog.title}
+                  className="w-full h-32 object-cover rounded-md"
+                  onError={(e) => {
+                    e.target.src = "/images/default-image.jpg";
+                  }}
+                />
+                <h2 className="text-lg font-semibold mt-2">{blog.title}</h2>
+                <p className="text-gray-600">{blog.category}</p>
+                <p className="text-gray-800 mt-2 flex-grow">
+                  {truncateDescription(blog.description, 90)}{" "}
+                  {/* Limit description length */}
+                </p>
+                <hr className="my-2" />
+                <div className="flex justify-between mt-3 px-10 shadow-sm">
+                  <button
+                    onClick={() => handleEdit(blog)}
+                    className="text-yellow-500 hover:text-yellow-600 transform hover:scale-110 transition-transform"
+                  >
+                    <FontAwesomeIcon icon={faEdit} size="lg" />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(blog._id)}
+                    className="text-red-500 hover:text-red-600 transform hover:scale-110 transition-transform"
+                  >
+                    <FontAwesomeIcon icon={faTrashCan} size="lg" />
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
 
-          <div className="flex justify-between items-center mt-4">
-            <span>
-              Showing {indexOfFirstBlog + 1}-
+          <div className="flex flex-col md:flex-row justify-between items-center mt-4">
+            <span className="mb-2 md:mb-0">
+              Showing {indexOfFirstBlog + 1}-{" "}
               {Math.min(indexOfLastBlog, blogs.length)} of {blogs.length}
             </span>
             <div className="flex space-x-2">

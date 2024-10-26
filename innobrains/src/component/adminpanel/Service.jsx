@@ -102,7 +102,9 @@ const Service = () => {
                   <tr>
                     <th className="px-4 py-2">Image</th>
                     <th className="px-4 py-2">Service Name</th>
-                    <th className="px-4 py-2">Description</th>
+                    <th className="px-4 py-2 hidden md:table-cell">
+                      Description
+                    </th>
                     <th className="px-4 py-2">Action</th>
                   </tr>
                 </thead>
@@ -120,7 +122,9 @@ const Service = () => {
                         />
                       </td>
                       <td className="px-4 py-2">{service.name}</td>
-                      <td className="px-4 py-2">{service.description}</td>
+                      <td className="px-4 py-2 hidden md:table-cell">
+                        {service.description}
+                      </td>
                       <td className="px-4 py-2 flex items-center space-x-2">
                         <button
                           onClick={() => handleEdit(service)}

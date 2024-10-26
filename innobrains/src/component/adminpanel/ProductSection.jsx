@@ -78,10 +78,10 @@ const ProductSection = () => {
   };
 
   return (
-    <div className="min-h-screen p-6 bg-gray-100">
+    <div className="min-h-screen p-4 sm:p-6 bg-gray-100">
       {/* Top Section with dynamic header */}
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-semibold">
+      <div className="flex justify-between items-center mb-4 sm:mb-6">
+        <h1 className="text-lg sm:text-2xl font-semibold">
           {showForm
             ? editProduct
               ? "Edit Product"
@@ -91,7 +91,7 @@ const ProductSection = () => {
         {!showForm && (
           <button
             onClick={handleAddNewProduct} // Show the ProductForm on button click
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            className="bg-blue-500 text-white px-3 py-1 sm:px-4 sm:py-2 rounded hover:bg-blue-600"
           >
             Add New Product
           </button>
@@ -107,16 +107,18 @@ const ProductSection = () => {
       ) : (
         <>
           {/* Product Table */}
-          <div className="max-w-7xl mx-auto bg-white shadow-md rounded-lg">
+          <div className="max-w-full lg:max-w-7xl mx-auto bg-white shadow-md rounded-lg">
             <div className="overflow-x-auto">
               <table className="table-auto w-full text-left">
                 <thead className="border-b-1">
                   <tr>
-                    <th className="px-4 py-2">Image</th>
-                    <th className="px-4 py-2">Name</th>
-                    <th className="px-4 py-2">Description</th>
-                    <th className="px-4 py-2">Link</th>
-                    <th className="px-4 py-2">Action</th>
+                    <th className="px-2 py-2 sm:px-4">Image</th>
+                    <th className="px-2 py-2 sm:px-4">Name</th>
+                    <th className="px-2 py-2 sm:px-4 hidden lg:table-cell">
+                      Description
+                    </th>
+                    <th className="px-2 py-2 sm:px-4">Link</th>
+                    <th className="px-2 py-2 sm:px-4">Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -126,15 +128,18 @@ const ProductSection = () => {
                         <img
                           src={`http://localhost:5000/uploads/${product.image}`}
                           alt={product.name}
-                          className="w-16 h-16 rounded-md"
+                          className="w-12 h-12 sm:w-16 sm:h-16 rounded-md"
                         />
                       </td>
                       <td className="px-4 py-2">{product.name}</td>
-                      <td className="px-4 py-2">{product.description}</td>
+                      <td className="px-4 py-2 hidden lg:table-cell">
+                        {/* Show only on large screens and above */}
+                        {product.description}
+                      </td>
                       <td className="px-4 py-2">
                         <a
                           href={product.link}
-                          className="text-blue-500 hover:underline"
+                          className="text-blue-500 hover:underline break-all"
                         >
                           {product.link}
                         </a>
@@ -161,17 +166,17 @@ const ProductSection = () => {
           </div>
 
           {/* Pagination */}
-          <div className="flex justify-between items-center mt-4">
-            <span>
+          <div className="flex flex-col sm:flex-row justify-between items-center mt-4">
+            <span className="text-sm">
               Showing {indexOfFirstProduct + 1}-
               {Math.min(indexOfLastProduct, products.length)} of{" "}
               {products.length}
             </span>
-            <div className="flex space-x-2">
+            <div className="flex space-x-2 mt-2 sm:mt-0">
               <button
                 onClick={() => setCurrentPage(currentPage - 1)}
                 disabled={currentPage === 1}
-                className={`px-3 py-1 rounded ${
+                className={`px-2 py-1 sm:px-3 sm:py-1 rounded ${
                   currentPage === 1 ? "bg-gray-300" : "bg-blue-500 text-white"
                 }`}
               >
@@ -182,7 +187,7 @@ const ProductSection = () => {
                   <button
                     key={page}
                     onClick={() => setCurrentPage(page)}
-                    className={`px-3 py-1 rounded ${
+                    className={`px-2 py-1 sm:px-3 sm:py-1 rounded ${
                       page === currentPage
                         ? "bg-blue-500 text-white"
                         : "bg-gray-300"
@@ -195,7 +200,7 @@ const ProductSection = () => {
               <button
                 onClick={() => setCurrentPage(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className={`px-3 py-1 rounded ${
+                className={`px-2 py-1 sm:px-3 sm:py-1 rounded ${
                   currentPage === totalPages
                     ? "bg-gray-300"
                     : "bg-blue-500 text-white"
