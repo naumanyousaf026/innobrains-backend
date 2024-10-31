@@ -68,7 +68,7 @@ const Team = () => {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className="min-h-screen p-6 bg-gray-100">
+    <div className="min-h-screen p-6 bg-gray-100 lg:w-[80%] ml-auto">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-semibold text-gray-800">
           {showForm

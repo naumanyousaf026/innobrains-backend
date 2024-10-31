@@ -1,4 +1,4 @@
-import { faCamera } from "@fortawesome/free-solid-svg-icons";
+import { faCamera, faLeftLong } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -17,7 +17,7 @@ const ProductForm = ({ product }) => {
       setName(product.name || "");
       setDescription(product.description || "");
       setLink(product.link || "");
-      setImage(product.image || null); // Assuming image path is available in product.image
+      setImage(product.image || null);
     }
   }, [product]);
 
@@ -33,7 +33,6 @@ const ProductForm = ({ product }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate the form fields
     const newError = {};
     if (!name) newError.name = "Name is required";
     if (!description) newError.description = "Description is required";
@@ -41,7 +40,6 @@ const ProductForm = ({ product }) => {
 
     setError(newError);
 
-    // If no error, submit the form data
     if (Object.keys(newError).length === 0) {
       const formData = new FormData();
       formData.append("name", name);
@@ -73,12 +71,24 @@ const ProductForm = ({ product }) => {
     }
   };
 
+  // Define onClose function to navigate back
+  const onClose = () => {
+    navigate(-1); // Go back to the previous page
+  };
+
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-100">
       <div
         className="bg-white p-8 rounded-lg shadow-md"
         style={{ width: "100%" }}
       >
+        <button
+          type="button"
+          onClick={onClose}
+          className="text-gray-600 hover:text-blue-500 transition duration-200 rounded-lg mb-4"
+        >
+          <FontAwesomeIcon icon={faLeftLong} />
+        </button>
         <div className="flex flex-col items-center mb-6">
           {/* Image Upload Section */}
           <div className="w-24 p-7 rounded-full bg-[#ECECEE] text-center mb-4">
@@ -111,7 +121,7 @@ const ProductForm = ({ product }) => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:border-blue-500"
-              placeholder="How To Start Building Mobile App Architecture" // Updated Placeholder
+              placeholder="How To Start Building Mobile App Architecture"
             />
             {error.name && (
               <p className="text-red-500 text-sm mt-2">{error.name}</p>
@@ -125,7 +135,7 @@ const ProductForm = ({ product }) => {
               value={link}
               onChange={(e) => setLink(e.target.value)}
               className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:border-blue-500"
-              placeholder="http://educationbrains.com" // Updated Placeholder
+              placeholder="http://educationbrains.com"
             />
           </div>
 
@@ -135,7 +145,7 @@ const ProductForm = ({ product }) => {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:border-blue-500"
-              placeholder="Lorem Ipsum is simply dummy text of the printing and typesetting industry..." // Updated Placeholder
+              placeholder="Lorem Ipsum is simply dummy text of the printing and typesetting industry..."
               rows="5"
             />
             {error.description && (
@@ -147,7 +157,7 @@ const ProductForm = ({ product }) => {
           <div className="flex justify-center">
             <button
               type="submit"
-              className="bg-[#103153] text-white px-6 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-300 "
+              className="bg-[#103153] text-white px-6 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
             >
               {product ? "Update" : "Upload"}
             </button>

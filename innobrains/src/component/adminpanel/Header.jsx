@@ -1,9 +1,6 @@
-import {
-  BellIcon,
-  MagnifyingGlassCircleIcon,
-  MagnifyingGlassIcon,
-} from "@heroicons/react/24/outline";
+import { BellIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
+
 const Header = ({ setSidebarOpen }) => {
   const navigate = useNavigate();
 
@@ -12,12 +9,11 @@ const Header = ({ setSidebarOpen }) => {
   };
 
   return (
-    <div className="w-full bg-white p-4 shadow-md flex justify-between items-center">
+    <div className="lg:w-[81%] bg-white p-4 shadow-md flex ml-auto justify-between items-center">
       <button
         onClick={() => setSidebarOpen((prev) => !prev)}
-        className="md:hidden p-2"
+        className="lg:hidden p-2"
       >
-        {/* Hamburger Icon for mobile */}
         <svg
           className="w-6 h-6"
           fill="none"
@@ -32,7 +28,7 @@ const Header = ({ setSidebarOpen }) => {
           />
         </svg>
       </button>
-      <div className="flex items-center gap-2 max-w-lg">
+      <div className="flex  gap-2 max-w-lg">
         <div className="flex items-center border rounded-md w-full">
           <MagnifyingGlassIcon className="h-6 w-6 text-gray-500 " />
           <input
@@ -59,9 +55,6 @@ const Header = ({ setSidebarOpen }) => {
             alt="User"
             className="w-10 h-10 rounded-full"
           />
-          <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1">
-            3
-          </span>
         </div>
       </div>
     </div>

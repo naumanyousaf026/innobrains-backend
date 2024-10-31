@@ -78,7 +78,7 @@ const ProductSection = () => {
   };
 
   return (
-    <div className="min-h-screen p-4 sm:p-6 bg-gray-100">
+    <div className="min-h-screen p-4 sm:p-6 bg-gray-100 lg:w-[80%] ml-auto">
       {/* Top Section with dynamic header */}
       <div className="flex justify-between items-center mb-4 sm:mb-6">
         <h1 className="text-lg sm:text-2xl font-semibold">

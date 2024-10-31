@@ -10,6 +10,7 @@ import RecentWork from "./component/RecentWork";
 import BlogSection from "./component/BlogSection";
 import WideRange from "./component/WideRange";
 import BlogInfoSection from "./component/BlogInfoSection";
+import Wave from "./component/TopWave";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
       <ClientCarousel />
       <WideRange />
       <ServicesSection limit={3} /> {/* Show 3 services */}
+      <Wave />
       <RecentWork limit={3} /> {/* Show 3 products */}
       <BlogInfoSection />
       <BlogSection limit={3} /> {/* Show 3 blogs */}

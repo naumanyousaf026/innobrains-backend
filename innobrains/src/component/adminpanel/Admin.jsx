@@ -10,7 +10,7 @@ import Service from "./Service";
 import Visitor from "./Visitor";
 
 const Admin = () => {
-  const [section, setSection] = useState("products");
+  const [section, setSection] = useState("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -19,20 +19,28 @@ const Admin = () => {
     navigate("/login");
   };
 
+  const toggleSidebar = () => {
+    setSidebarOpen((prev) => !prev);
+  };
+
   return (
-    <div className="flex">
+    <div className="flex relative">
       <Sidebar
         setSection={setSection}
         handleLogout={handleLogout}
         isOpen={sidebarOpen}
+        toggleSidebar={toggleSidebar}
       />
-      <div
-        className={`flex-1 transition-all duration-300 ${
-          sidebarOpen ? "ml-48" : "ml-0"
-        } md:ml-64`} // Adjust margin for the sidebar width
-      >
-        <Header setSidebarOpen={setSidebarOpen} />
-        <div className="p-6">
+      {/* Overlay when sidebar is open */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black opacity-30 z-10"
+          onClick={toggleSidebar}
+        ></div>
+      )}
+      <div className="flex-1">
+        <Header setSidebarOpen={toggleSidebar} />
+        <div className="p-0o lg:p-0">
           {section === "dashboard" && <Dashboard />}
           {section === "products" && <ProductSection />}
           {section === "services" && <Service />}
