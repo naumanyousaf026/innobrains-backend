@@ -16,10 +16,10 @@ function PageNotFound() {
 
         {/* Button */}
         <button
-          onClick={() => (window.location.href = "/admin")}
+          onClick={() => (window.location.href = "/")}
           className="w-72 nunito-sans bg-[#103153] text-white py-2 rounded-lg transition duration-200"
         >
-          Back to Dashboard
+          Back to Home
         </button>
       </div>
     </div>

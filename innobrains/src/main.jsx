@@ -13,7 +13,7 @@ import Admin from "./component/adminpanel/Admin.jsx";
 
 import ProtectedRoute from "./component/adminpanel/ProtectedRoute.jsx";
 import Login from "./component/adminpanel/Login.jsx";
-import Signupform from "./component/adminpanel/Signupform.jsx";
+// import Signupform from "./component/adminpanel/Signupform.jsx";
 import EmailRequest from "./component/adminpanel/EmailRequest.jsx";
 import VerifyOTP from "./component/adminpanel/VerifyOTP.jsx";
 import ResetPassword from "./component/adminpanel/ResetPassword.jsx";
@@ -44,10 +44,10 @@ const router = createBrowserRouter([
     path: "/products",
     element: <Products />,
   },
-  {
-    path: "/signupform",
-    element: <Signupform />,
-  },
+  // {
+  //   path: "/signupform",
+  //   element: <Signupform />,
+  // },
   {
     path: "/login",
     element: <Login />,

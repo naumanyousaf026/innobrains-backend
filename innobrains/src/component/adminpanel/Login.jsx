@@ -102,7 +102,7 @@ const Login = () => {
         </form>
 
         {/* Create Account Link */}
-        <p className="text-center text-sm text-gray-500 mt-4 font-nunito">
+        {/* <p className="text-center text-sm text-gray-500 mt-4 font-nunito">
           Don’t have an account?{" "}
           <Link
             to="/Signupform"
@@ -110,7 +110,7 @@ const Login = () => {
           >
             Create Account
           </Link>
-        </p>
+        </p> */}
       </div>
     </div>
   );

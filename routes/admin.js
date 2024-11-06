@@ -17,6 +17,12 @@ function generateOTP() {
 router.post("/register", async (req, res) => {
   const { name, email, password } = req.body;
 
+  // Allow signup only for the specific admin email
+  if (email !== "naumany518@gmail.com") {
+    return res.status(403).json({ message: "Access denied" });
+  }
+
+  // Check if name, email, and password are provided
   if (!name || !email || !password) {
     return res
       .status(400)
@@ -39,7 +45,7 @@ router.post("/register", async (req, res) => {
       admin: { id: newAdmin._id, name: newAdmin.name, email: newAdmin.email },
     });
   } catch (error) {
-    console.error(error);
+    console.error("Registration error:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 });
@@ -48,6 +54,12 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
+  // Allow login only for the specific admin email
+  if (email !== "naumany518@gmail.com") {
+    return res.status(403).json({ message: "Access denied" });
+  }
+
+  // Check if email and password are provided
   if (!email || !password) {
     return res.status(400).json({ message: "Email and password are required" });
   }
