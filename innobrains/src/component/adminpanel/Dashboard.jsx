@@ -121,10 +121,10 @@ const Dashboard = () => {
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">Dashboard</h1>
           <div className="flex space-x-4">
-            <button className="bg-blue-500 text-white px-4 py-2 rounded">
+            {/* <button className="bg-blue-500 text-white px-4 py-2 rounded">
               New
-            </button>
-            <button className="bg-gray-200 px-4 py-2 rounded">Filters</button>
+            </button> */}
+            {/* <button className="bg-gray-200 px-4 py-2 rounded">Filters</button> */}
           </div>
         </div>
 

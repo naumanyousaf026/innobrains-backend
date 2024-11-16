@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import pointer from "./../images/handpointer.png"; // Fallback image
 import { Link } from "react-router-dom";
 
 const GrowthSteps = () => {
@@ -14,9 +13,9 @@ const GrowthSteps = () => {
         // Map the data to include the images
         const stepsWithImages = data.map((step) => ({
           ...step,
-          image: `http://localhost:5000/images/${
-            step.image || "handpointer.png"
-          }`,
+          image: step.image
+            ? `http://localhost:5000/growthImage/${step.image}`
+            : "http://localhost:5000/growthImage/handpointer.png", // Fallback image URL
         }));
         setSteps(stepsWithImages);
       } catch (error) {
@@ -52,7 +51,7 @@ const GrowthSteps = () => {
             </div>
             <div className="mt-10">
               <img
-                src={step.image || pointer} // Use a fallback image if the image is not available
+                src={step.image} // Directly use the image URL
                 alt={`Step ${step.number} icon`}
                 className="mx-auto mb-4 w-16 h-16"
               />

@@ -7,7 +7,7 @@ const stepSchema = new mongoose.Schema({
   },
   image: {
     type: String, // path to the image
-    required: true,
+    // required: true,
   },
   title: {
     type: String,

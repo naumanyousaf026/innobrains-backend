@@ -19,6 +19,9 @@ import VerifyOTP from "./component/adminpanel/VerifyOTP.jsx";
 import ResetPassword from "./component/adminpanel/ResetPassword.jsx";
 import SuccessMessage from "./component/adminpanel/SuccessMessage.jsx";
 import PageNotFound from "./component/adminpanel/PageNotFound.jsx";
+import AchievementForm from "./component/adminpanel/AchievementForm.jsx";
+import ContactInfoForm from "./component/adminpanel/ContactInfoForm.jsx";
+import StepForm from "./component/adminpanel/StepForm.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -44,6 +47,18 @@ const router = createBrowserRouter([
     path: "/products",
     element: <Products />,
   },
+  {
+    path: "/AchievementForm",
+    element: <AchievementForm />,
+  },
+  {
+    path: "/StepForm",
+    element: <StepForm />,
+  },
+  // {
+  //   path: "/ContactInfoForm",
+  //   element: <ContactInfoForm />,
+  // },
   // {
   //   path: "/signupform",
   //   element: <Signupform />,

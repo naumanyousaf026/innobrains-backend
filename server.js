@@ -66,8 +66,16 @@ app.use("/api/satisfie", satisfieRoutes);
 app.use("/api/growthsteps", growthStepRoutes);
 app.use("/api/admin", adminRoutes);
 
+// Example backend route to get status
+app.get("/api/status", (req, res) => {
+  // Assuming status is stored in your DB
+  const status = 1; // Or dynamically fetch it from DB
+  res.json({ status });
+});
+
 app.use("/uploads", express.static(path.join(__dirname, "src/uploads")));
 app.use("/blogImages", express.static(path.join(__dirname, "blogImages")));
+app.use("/growthImage", express.static(path.join(__dirname, "growthImage")));
 
 // Start the server
 const port = process.env.PORT || 5000;

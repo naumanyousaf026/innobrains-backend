@@ -1,15 +1,31 @@
 const express = require("express");
 const router = express.Router();
-const Step = require("../models/growthstep"); // Adjust the path as needed
+const multer = require("multer");
+const path = require("path");
+const Step = require("../models/growthstep");
+// Adjust the path as needed
 
-// Create a new step
-router.post("/", async (req, res) => {
-  const { number, image, title, description } = req.body;
+// Configure multer storage
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "growthImage"); // Set the destination folder for images
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname)); // Use a unique name with the original extension
+  },
+});
+
+// Initialize multer
+const upload = multer({ storage });
+
+// Create a new step with image upload
+router.post("/", upload.single("image"), async (req, res) => {
+  const { number, title, description } = req.body;
 
   try {
     const newStep = new Step({
       number,
-      image,
+      image: req.file ? req.file.filename : null, // Store the filename if an image is uploaded
       title,
       description,
     });
@@ -44,16 +60,19 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// Update a step by ID
-router.put("/:id", async (req, res) => {
-  const { number, image, title, description } = req.body;
+// Update a step by ID with image upload
+router.put("/:id", upload.single("image"), async (req, res) => {
+  const { number, title, description } = req.body;
+  const updatedData = { number, title, description };
+
+  if (req.file) {
+    updatedData.image = req.file.filename; // Update the image if a new file is uploaded
+  }
 
   try {
-    const step = await Step.findByIdAndUpdate(
-      req.params.id,
-      { number, image, title, description },
-      { new: true } // Return the updated step
-    );
+    const step = await Step.findByIdAndUpdate(req.params.id, updatedData, {
+      new: true,
+    });
 
     if (!step) {
       return res.status(404).json({ message: "Step not found" });
