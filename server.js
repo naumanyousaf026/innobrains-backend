@@ -38,6 +38,7 @@ const contactInfoRoutes = require("./routes/contactInfoRoutes");
 const growthStepRoutes = require("./routes/growthstep");
 const adminRoutes = require("./routes/admin");
 const aboutUsRoutes = require('./routes/aboutUs');
+const companyValuesRoute = require('./routes/companyValues');
 // Connect to MongoDB
 mongoose
   .connect(process.env.MONGO_URL, {
@@ -66,6 +67,7 @@ app.use("/api/satisfie", satisfieRoutes);
 app.use("/api/growthsteps", growthStepRoutes);
 app.use("/api/admin", adminRoutes);
 app.use('/api/aboutus', aboutUsRoutes);
+app.use('/api/company-values', companyValuesRoute);
 // Example backend route to get status
 app.get("/api/status", (req, res) => {
   // Assuming status is stored in your DB
