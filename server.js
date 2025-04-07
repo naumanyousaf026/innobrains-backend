@@ -40,7 +40,7 @@ const adminRoutes = require("./routes/admin");
 
 // Connect to MongoDB
 mongoose
-  .connect("mongodb://localhost:27017/aboutUsApp", {
+  .connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
