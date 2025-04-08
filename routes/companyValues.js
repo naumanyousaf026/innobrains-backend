@@ -1,5 +1,4 @@
 // routes/companyValues.js
-
 const express = require('express');
 const router = express.Router();
 const CompanyValues = require('../models/CompanyValues'); // Import the model
