@@ -15,16 +15,23 @@ const blogSchema = new mongoose.Schema(
     category: {
       type: String,
       required: true,
-      enum: ["Development", "Design", "Marketing"], // Valid categories
-    },
-    description: {
-      type: String,
-      required: true,
       trim: true,
     },
-    image: {
-      type: String, // Store the image path or URL
-      required: true,
+    content: [
+      {
+        type: {
+          type: String,
+          enum: ["paragraph", "heading", "subheading", "image"],
+          required: true,
+        },
+        value: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
+    images: {
+      type: [String], // Optional general images, like featured images
     },
   },
   { timestamps: true }

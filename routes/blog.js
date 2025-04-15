@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// Get all blogs
+// GET all blogs
 router.get("/", async (req, res) => {
   try {
     const blogs = await Blog.find();
@@ -26,7 +26,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Get a blog by ID
+// GET blog by ID
 router.get("/:id", async (req, res) => {
   try {
     const blog = await Blog.findById(req.params.id);
@@ -37,42 +37,69 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// Create a new blog
-router.post("/", upload.single("image"), async (req, res) => {
-  const { title, duration, category, description } = req.body;
-  const image = req.file ? `/blogImages/${req.file.filename}` : null;
+// POST: Create a new blog
+router.post("/", upload.array("images", 10), async (req, res) => {
+  const { title, duration, category, content } = req.body;
+  let contentArray;
 
   try {
-    const newBlog = new Blog({ title, duration, category, description, image });
+    contentArray = JSON.parse(content); // Convert stringified content to array
+  } catch (err) {
+    return res.status(400).json({ error: "Invalid content format" });
+  }
+
+  const imagePaths = req.files.map((file) => `/blogImages/${file.filename}`);
+
+  try {
+    const newBlog = new Blog({
+      title,
+      duration,
+      category,
+      content: contentArray,
+      images: imagePaths,
+    });
+
     const savedBlog = await newBlog.save();
     res.status(201).json(savedBlog);
   } catch (err) {
-    console.error("Error saving blog:", err);
     res.status(500).json({ error: "Failed to save blog" });
   }
 });
 
-// Update a blog
-router.put("/:id", upload.single("image"), async (req, res) => {
-  const { title, duration, category, description } = req.body;
-  const image = req.file ? `/blogImages/${req.file.filename}` : null;
+// PUT: Update a blog
+router.put("/:id", upload.array("images", 10), async (req, res) => {
+  const { title, duration, category, content } = req.body;
+  let contentArray;
+
+  try {
+    contentArray = JSON.parse(content); // Convert stringified content to array
+  } catch (err) {
+    return res.status(400).json({ error: "Invalid content format" });
+  }
+
+  const imagePaths = req.files.map((file) => `/blogImages/${file.filename}`);
 
   try {
     const updatedBlog = await Blog.findByIdAndUpdate(
       req.params.id,
-      { title, duration, category, description, image },
+      {
+        title,
+        duration,
+        category,
+        content: contentArray,
+        $push: { images: { $each: imagePaths } }, // Add new images to existing ones
+      },
       { new: true }
     );
 
     if (!updatedBlog) return res.status(404).json({ error: "Blog not found" });
     res.status(200).json(updatedBlog);
   } catch (err) {
-    console.error("Error updating blog:", err);
     res.status(500).json({ error: "Failed to update blog" });
   }
 });
 
-// Delete a blog
+// DELETE: Delete a blog
 router.delete("/:id", async (req, res) => {
   try {
     const deletedBlog = await Blog.findByIdAndDelete(req.params.id);
