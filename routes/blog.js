@@ -16,6 +16,8 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+// ======================= ROUTES ======================== //
+
 // GET all blogs
 router.get("/", async (req, res) => {
   try {
@@ -26,7 +28,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET blog by ID
+// GET single blog by ID
 router.get("/:id", async (req, res) => {
   try {
     const blog = await Blog.findById(req.params.id);
@@ -40,15 +42,19 @@ router.get("/:id", async (req, res) => {
 // POST: Create a new blog
 router.post("/", upload.array("images", 10), async (req, res) => {
   const { title, duration, category, content } = req.body;
-  let contentArray;
 
+  let contentArray;
   try {
-    contentArray = JSON.parse(content); // Convert stringified content to array
+    // Accept either JSON string or array directly
+    contentArray = typeof content === "string" ? JSON.parse(content) : content;
   } catch (err) {
     return res.status(400).json({ error: "Invalid content format" });
   }
 
-  const imagePaths = req.files.map((file) => `/blogImages/${file.filename}`);
+  // Check if images are uploaded, otherwise use existing image paths from body
+  const imagePaths = req.files && req.files.length > 0
+    ? req.files.map((file) => `/blogImages/${file.filename}`)
+    : req.body.images || [];
 
   try {
     const newBlog = new Blog({
@@ -66,31 +72,37 @@ router.post("/", upload.array("images", 10), async (req, res) => {
   }
 });
 
-// PUT: Update a blog
+// PUT: Update blog by ID
 router.put("/:id", upload.array("images", 10), async (req, res) => {
   const { title, duration, category, content } = req.body;
-  let contentArray;
 
+  let contentArray;
   try {
-    contentArray = JSON.parse(content); // Convert stringified content to array
+    contentArray = typeof content === "string" ? JSON.parse(content) : content;
   } catch (err) {
     return res.status(400).json({ error: "Invalid content format" });
   }
 
-  const imagePaths = req.files.map((file) => `/blogImages/${file.filename}`);
+  const imagePaths = req.files && req.files.length > 0
+    ? req.files.map((file) => `/blogImages/${file.filename}`)
+    : [];
 
   try {
-    const updatedBlog = await Blog.findByIdAndUpdate(
-      req.params.id,
-      {
-        title,
-        duration,
-        category,
-        content: contentArray,
-        $push: { images: { $each: imagePaths } }, // Add new images to existing ones
-      },
-      { new: true }
-    );
+    const updateData = {
+      title,
+      duration,
+      category,
+      content: contentArray,
+    };
+
+    // If new images provided, push to images array
+    if (imagePaths.length > 0) {
+      updateData.$push = { images: { $each: imagePaths } };
+    }
+
+    const updatedBlog = await Blog.findByIdAndUpdate(req.params.id, updateData, {
+      new: true,
+    });
 
     if (!updatedBlog) return res.status(404).json({ error: "Blog not found" });
     res.status(200).json(updatedBlog);
@@ -99,7 +111,7 @@ router.put("/:id", upload.array("images", 10), async (req, res) => {
   }
 });
 
-// DELETE: Delete a blog
+// DELETE blog by ID
 router.delete("/:id", async (req, res) => {
   try {
     const deletedBlog = await Blog.findByIdAndDelete(req.params.id);
