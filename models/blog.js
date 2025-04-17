@@ -23,16 +23,15 @@ const blogSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    // Changed from array of content blocks to rich HTML content
     content: {
       type: String,
       required: true,
     },
     featuredImage: {
-      type: String, // Path to featured image
+      type: String,
     },
     tags: {
-      type: [String], // Array of tags
+      type: [String],
       default: [],
     },
     status: {
@@ -48,7 +47,7 @@ const blogSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Generate slug before saving if not provided
+// Generate slug before saving
 blogSchema.pre('save', function(next) {
   const slugify = require('slugify');
   if (!this.slug && this.title) {
