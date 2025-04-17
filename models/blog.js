@@ -7,6 +7,12 @@ const blogSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    slug: {
+      type: String,
+      unique: true,
+      sparse: true, // Allows multiple documents without slug
+      trim: true,
+    },
     duration: {
       type: String,
       required: true,

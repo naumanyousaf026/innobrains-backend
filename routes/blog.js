@@ -1,6 +1,7 @@
 const express = require("express");
 const multer = require("multer");
 const path = require("path");
+const slugify = require("slugify");
 const Blog = require("../models/blog");
 const router = express.Router();
 
@@ -28,7 +29,18 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET single blog by ID
+// GET blog by slug (for SEO-friendly URL)
+router.get("/slug/:slug", async (req, res) => {
+  try {
+    const blog = await Blog.findOne({ slug: req.params.slug });
+    if (!blog) return res.status(404).json({ error: "Blog not found" });
+    res.status(200).json(blog);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch blog by slug" });
+  }
+});
+
+// GET blog by ID
 router.get("/:id", async (req, res) => {
   try {
     const blog = await Blog.findById(req.params.id);
@@ -41,24 +53,28 @@ router.get("/:id", async (req, res) => {
 
 // POST: Create a new blog
 router.post("/", upload.array("images", 10), async (req, res) => {
-  const { title, duration, category, content } = req.body;
+  const { title, duration, category, content, slug: manualSlug } = req.body;
 
   let contentArray;
   try {
-    // Accept either JSON string or array directly
     contentArray = typeof content === "string" ? JSON.parse(content) : content;
   } catch (err) {
     return res.status(400).json({ error: "Invalid content format" });
   }
 
-  // Check if images are uploaded, otherwise use existing image paths from body
-  const imagePaths = req.files && req.files.length > 0
+  const imagePaths = req.files?.length
     ? req.files.map((file) => `/blogImages/${file.filename}`)
     : req.body.images || [];
+
+  // Generate slug
+  const slug = manualSlug
+    ? slugify(manualSlug, { lower: true, strict: true })
+    : slugify(title, { lower: true, strict: true });
 
   try {
     const newBlog = new Blog({
       title,
+      slug,
       duration,
       category,
       content: contentArray,
@@ -74,7 +90,7 @@ router.post("/", upload.array("images", 10), async (req, res) => {
 
 // PUT: Update blog by ID
 router.put("/:id", upload.array("images", 10), async (req, res) => {
-  const { title, duration, category, content } = req.body;
+  const { title, duration, category, content, slug: manualSlug } = req.body;
 
   let contentArray;
   try {
@@ -83,19 +99,23 @@ router.put("/:id", upload.array("images", 10), async (req, res) => {
     return res.status(400).json({ error: "Invalid content format" });
   }
 
-  const imagePaths = req.files && req.files.length > 0
+  const imagePaths = req.files?.length
     ? req.files.map((file) => `/blogImages/${file.filename}`)
     : [];
+
+  const slug = manualSlug
+    ? slugify(manualSlug, { lower: true, strict: true })
+    : slugify(title, { lower: true, strict: true });
 
   try {
     const updateData = {
       title,
+      slug,
       duration,
       category,
       content: contentArray,
     };
 
-    // If new images provided, push to images array
     if (imagePaths.length > 0) {
       updateData.$push = { images: { $each: imagePaths } };
     }
