@@ -62,9 +62,8 @@ router.post("/", upload.array("images", 10), async (req, res) => {
     return res.status(400).json({ error: "Invalid content format" });
   }
 
-  const imagePaths = req.files?.length
-    ? req.files.map((file) => `/blogImages/${file.filename}`)
-    : req.body.images || [];
+  // Handle image files
+  const imagePaths = req.files?.map((file) => `/blogImages/${file.filename}`) || [];
 
   // Generate slug
   const slug = manualSlug
@@ -72,18 +71,33 @@ router.post("/", upload.array("images", 10), async (req, res) => {
     : slugify(title, { lower: true, strict: true });
 
   try {
+    // Process content blocks for any content images
+    const processedContentBlocks = contentArray.map(block => {
+      // Check if the block is an image block and has a reference to a content image
+      if (block.type === 'image' && block.value.startsWith('contentImage_')) {
+        // Find the index referenced in the content image
+        const imageIndex = block.value.split('_')[1];
+        // Update the block value with the actual file path if it exists
+        if (req.files && req.files[imageIndex]) {
+          block.value = `/blogImages/${req.files[imageIndex].filename}`;
+        }
+      }
+      return block;
+    });
+
     const newBlog = new Blog({
       title,
       slug,
       duration,
       category,
-      content: contentArray,
+      content: processedContentBlocks,
       images: imagePaths,
     });
 
     const savedBlog = await newBlog.save();
     res.status(201).json(savedBlog);
   } catch (err) {
+    console.error("Error saving blog:", err);
     res.status(500).json({ error: "Failed to save blog" });
   }
 });
@@ -99,25 +113,48 @@ router.put("/:id", upload.array("images", 10), async (req, res) => {
     return res.status(400).json({ error: "Invalid content format" });
   }
 
-  const imagePaths = req.files?.length
-    ? req.files.map((file) => `/blogImages/${file.filename}`)
-    : [];
+  // Process uploaded files
+  const imagePaths = req.files?.map((file) => `/blogImages/${file.filename}`) || [];
 
+  // Generate slug
   const slug = manualSlug
     ? slugify(manualSlug, { lower: true, strict: true })
     : slugify(title, { lower: true, strict: true });
 
   try {
+    // Process content blocks for any content images
+    const processedContentBlocks = contentArray.map(block => {
+      // Check if the block is an image block and has a reference to a content image
+      if (block.type === 'image' && block.value.startsWith('contentImage_')) {
+        // Find the index referenced in the content image
+        const imageIndex = block.value.split('_')[1];
+        // Update the block value with the actual file path if it exists
+        if (req.files && req.files[imageIndex]) {
+          block.value = `/blogImages/${req.files[imageIndex].filename}`;
+        }
+      }
+      return block;
+    });
+
+    // Prepare update data
     const updateData = {
       title,
       slug,
       duration,
       category,
-      content: contentArray,
+      content: processedContentBlocks,
     };
 
+    // If we have new images, add them to the images array
     if (imagePaths.length > 0) {
-      updateData.$push = { images: { $each: imagePaths } };
+      // Get current blog to append to existing images
+      const currentBlog = await Blog.findById(req.params.id);
+      if (currentBlog) {
+        // Combine existing images with new ones
+        updateData.images = [...(currentBlog.images || []), ...imagePaths];
+      } else {
+        updateData.images = imagePaths;
+      }
     }
 
     const updatedBlog = await Blog.findByIdAndUpdate(req.params.id, updateData, {
@@ -127,6 +164,7 @@ router.put("/:id", upload.array("images", 10), async (req, res) => {
     if (!updatedBlog) return res.status(404).json({ error: "Blog not found" });
     res.status(200).json(updatedBlog);
   } catch (err) {
+    console.error("Error updating blog:", err);
     res.status(500).json({ error: "Failed to update blog" });
   }
 });
