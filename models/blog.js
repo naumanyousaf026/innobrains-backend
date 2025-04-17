@@ -23,25 +23,39 @@ const blogSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    content: [
-      {
-        type: {
-          type: String,
-          enum: ["paragraph", "heading", "subheading", "image"],
-          required: true,
-        },
-        value: {
-          type: String,
-          required: true,
-        },
-      },
-    ],
-    images: {
-      type: [String], // Optional general images, like featured images
+    // Changed from array of content blocks to rich HTML content
+    content: {
+      type: String,
+      required: true,
+    },
+    featuredImage: {
+      type: String, // Path to featured image
+    },
+    tags: {
+      type: [String], // Array of tags
+      default: [],
+    },
+    status: {
+      type: String,
+      enum: ['draft', 'published'],
+      default: 'draft',
+    },
+    author: {
+      type: String,
+      default: 'Admin',
     },
   },
   { timestamps: true }
 );
+
+// Generate slug before saving if not provided
+blogSchema.pre('save', function(next) {
+  const slugify = require('slugify');
+  if (!this.slug && this.title) {
+    this.slug = slugify(this.title, { lower: true, strict: true });
+  }
+  next();
+});
 
 const Blog = mongoose.model("Blog", blogSchema);
 

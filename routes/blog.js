@@ -19,18 +19,39 @@ const upload = multer({ storage: storage });
 
 // ======================= ROUTES ======================== //
 
-// GET all blogs
+
+// GET all blogs with pagination and filters
 router.get("/", async (req, res) => {
   try {
-    const blogs = await Blog.find();
-    res.status(200).json(blogs);
+    const { page = 1, limit = 10, category, tag, status } = req.query;
+    const query = {};
+    
+    if (category) query.category = category;
+    if (tag) query.tags = { $in: [tag] };
+    if (status) query.status = status;
+    
+    const blogs = await Blog.find(query)
+      .sort({ createdAt: -1 })
+      .limit(parseInt(limit))
+      .skip((parseInt(page) - 1) * parseInt(limit))
+      .select('-content'); // Don't send content in list view for performance
+    
+    const count = await Blog.countDocuments(query);
+    
+    res.status(200).json({
+      blogs,
+      totalPages: Math.ceil(count / limit),
+      currentPage: parseInt(page),
+      totalBlogs: count,
+    });
   } catch (err) {
+    console.error("Error fetching blogs:", err);
     res.status(500).json({ error: "Failed to fetch blogs" });
   }
 });
 
 // GET blog by slug (for SEO-friendly URL)
-router.get("/slug/:slug", async (req, res) => {
+router.get("/:slug", async (req, res) => {
   try {
     const blog = await Blog.findOne({ slug: req.params.slug });
     if (!blog) return res.status(404).json({ error: "Blog not found" });
@@ -52,111 +73,70 @@ router.get("/:id", async (req, res) => {
 });
 
 // POST: Create a new blog
-router.post("/", upload.array("images", 10), async (req, res) => {
-  const { title, duration, category, content, slug: manualSlug } = req.body;
-
-  let contentArray;
+router.post("/", upload.single("featuredImage"), async (req, res) => {
   try {
-    contentArray = typeof content === "string" ? JSON.parse(content) : content;
-  } catch (err) {
-    return res.status(400).json({ error: "Invalid content format" });
-  }
-
-  // Handle image files
-  const imagePaths = req.files?.map((file) => `/blogImages/${file.filename}`) || [];
-
-  // Generate slug
-  const slug = manualSlug
-    ? slugify(manualSlug, { lower: true, strict: true })
-    : slugify(title, { lower: true, strict: true });
-
-  try {
-    // Process content blocks for any content images
-    const processedContentBlocks = contentArray.map(block => {
-      // Check if the block is an image block and has a reference to a content image
-      if (block.type === 'image' && block.value.startsWith('contentImage_')) {
-        // Find the index referenced in the content image
-        const imageIndex = block.value.split('_')[1];
-        // Update the block value with the actual file path if it exists
-        if (req.files && req.files[imageIndex]) {
-          block.value = `/blogImages/${req.files[imageIndex].filename}`;
-        }
-      }
-      return block;
-    });
-
+    const { title, duration, category, content, tags, status, author } = req.body;
+    
+    // Create new blog object
     const newBlog = new Blog({
       title,
-      slug,
       duration,
       category,
-      content: processedContentBlocks,
-      images: imagePaths,
+      content,
+      status: status || 'draft',
+      author: author || 'Admin',
     });
-
+    
+    // Handle featured image if uploaded
+    if (req.file) {
+      newBlog.featuredImage = `/uploads/${req.file.filename}`;
+    }
+    
+    // Handle tags
+    if (tags) {
+      newBlog.tags = typeof tags === 'string' ? JSON.parse(tags) : tags;
+    }
+    
     const savedBlog = await newBlog.save();
     res.status(201).json(savedBlog);
   } catch (err) {
     console.error("Error saving blog:", err);
-    res.status(500).json({ error: "Failed to save blog" });
+    res.status(500).json({ error: "Failed to save blog", details: err.message });
   }
 });
 
 // PUT: Update blog by ID
-router.put("/:id", upload.array("images", 10), async (req, res) => {
-  const { title, duration, category, content, slug: manualSlug } = req.body;
-
-  let contentArray;
+router.put("/:id", upload.single("featuredImage"), async (req, res) => {
   try {
-    contentArray = typeof content === "string" ? JSON.parse(content) : content;
-  } catch (err) {
-    return res.status(400).json({ error: "Invalid content format" });
-  }
-
-  // Process uploaded files
-  const imagePaths = req.files?.map((file) => `/blogImages/${file.filename}`) || [];
-
-  // Generate slug
-  const slug = manualSlug
-    ? slugify(manualSlug, { lower: true, strict: true })
-    : slugify(title, { lower: true, strict: true });
-
-  try {
-    // Process content blocks for any content images
-    const processedContentBlocks = contentArray.map(block => {
-      // Check if the block is an image block and has a reference to a content image
-      if (block.type === 'image' && block.value.startsWith('contentImage_')) {
-        // Find the index referenced in the content image
-        const imageIndex = block.value.split('_')[1];
-        // Update the block value with the actual file path if it exists
-        if (req.files && req.files[imageIndex]) {
-          block.value = `/blogImages/${req.files[imageIndex].filename}`;
-        }
-      }
-      return block;
-    });
-
+    const { title, duration, category, content, tags, status, author } = req.body;
+    
     // Prepare update data
     const updateData = {
       title,
-      slug,
       duration,
       category,
-      content: processedContentBlocks,
+      content,
     };
-
-    // If we have new images, add them to the images array
-    if (imagePaths.length > 0) {
-      // Get current blog to append to existing images
-      const currentBlog = await Blog.findById(req.params.id);
-      if (currentBlog) {
-        // Combine existing images with new ones
-        updateData.images = [...(currentBlog.images || []), ...imagePaths];
-      } else {
-        updateData.images = imagePaths;
-      }
+    
+    // Only update optional fields if provided
+    if (status) updateData.status = status;
+    if (author) updateData.author = author;
+    
+    // Handle slug generation if title changes
+    if (title) {
+      updateData.slug = slugify(title, { lower: true, strict: true });
     }
-
+    
+    // Handle featured image if uploaded
+    if (req.file) {
+      updateData.featuredImage = `/uploads/${req.file.filename}`;
+    }
+    
+    // Handle tags
+    if (tags) {
+      updateData.tags = typeof tags === 'string' ? JSON.parse(tags) : tags;
+    }
+    
     const updatedBlog = await Blog.findByIdAndUpdate(req.params.id, updateData, {
       new: true,
     });
@@ -165,7 +145,24 @@ router.put("/:id", upload.array("images", 10), async (req, res) => {
     res.status(200).json(updatedBlog);
   } catch (err) {
     console.error("Error updating blog:", err);
-    res.status(500).json({ error: "Failed to update blog" });
+    res.status(500).json({ error: "Failed to update blog", details: err.message });
+  }
+});
+
+// Upload image for editor
+router.post("/upload-image", upload.single("image"), (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: "No image uploaded" });
+    }
+    
+    const imageUrl = `/uploads/${req.file.filename}`;
+    res.status(200).json({ 
+      location: imageUrl  // Using 'location' as TinyMCE expects this property
+    });
+  } catch (err) {
+    console.error("Error uploading image:", err);
+    res.status(500).json({ error: "Failed to upload image" });
   }
 });
 
