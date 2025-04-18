@@ -11,14 +11,14 @@ dotenv.config();
 
 const app = express();
 
-// Middleware
+// Middlewares
 app.use(cors({
-  origin: ['https://innobrains.pk'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  origin: 'https://innobrains.pk', // Only allow this domain
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
+  credentials: true, // If using cookies or credentials
 }));
-app.options('*', cors()); // Handle preflight requests
+app.options('*', cors());// Handle preflight requests
 
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
