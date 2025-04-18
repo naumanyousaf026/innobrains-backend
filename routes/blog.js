@@ -66,8 +66,9 @@ router.post("/", upload.single("featuredImage"), async (req, res) => {
     });
 
     if (req.file) {
-      newBlog.featuredImage = `/uploads/${req.file.filename}`;
+      newBlog.featuredImage = `/blogImages/${req.file.filename}`;
     }
+    
     
     if (tags) {
       newBlog.tags = typeof tags === 'string' ? JSON.parse(tags) : tags;
@@ -96,8 +97,9 @@ router.put("/:id", upload.single("featuredImage"), async (req, res) => {
     }
     
     if (req.file) {
-      updateData.featuredImage = `/uploads/${req.file.filename}`;
+      newBlog.featuredImage = `/blogImages/${req.file.filename}`;
     }
+    
     
     if (tags) {
       updateData.tags = typeof tags === 'string' ? JSON.parse(tags) : tags;
