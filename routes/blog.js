@@ -52,10 +52,6 @@ router.post("/", upload.single("featuredImage"), async (req, res) => {
   try {
     const { title, duration, category, content, tags, status, author } = req.body;
     
-    if (!title || !category || !content) {
-      return res.status(400).json({ error: "Title, category, and content are required." });
-    }
-
     const newBlog = new Blog({
       title,
       duration,
@@ -64,16 +60,15 @@ router.post("/", upload.single("featuredImage"), async (req, res) => {
       status: status || 'draft',
       author: author || 'Admin',
     });
-
-    if (req.file) {
-      newBlog.featuredImage = `/blogImages/${req.file.filename}`;
-    }
     
+    if (req.file) {
+      newBlog.featuredImage = `/uploads/${req.file.filename}`;
+    }
     
     if (tags) {
       newBlog.tags = typeof tags === 'string' ? JSON.parse(tags) : tags;
     }
-
+    
     const savedBlog = await newBlog.save();
     res.status(201).json(savedBlog);
   } catch (err) {
@@ -81,7 +76,6 @@ router.post("/", upload.single("featuredImage"), async (req, res) => {
     res.status(500).json({ error: "Failed to save blog", details: err.message });
   }
 });
-
 
 // Update blog by ID
 router.put("/:id", upload.single("featuredImage"), async (req, res) => {
@@ -97,9 +91,8 @@ router.put("/:id", upload.single("featuredImage"), async (req, res) => {
     }
     
     if (req.file) {
-      newBlog.featuredImage = `/blogImages/${req.file.filename}`;
+      updateData.featuredImage = `/uploads/${req.file.filename}`;
     }
-    
     
     if (tags) {
       updateData.tags = typeof tags === 'string' ? JSON.parse(tags) : tags;
