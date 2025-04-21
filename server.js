@@ -14,9 +14,10 @@ const app = express();
 // Middlewares
 app.use(cors({
   origin: 'https://innobrains.pk', // Only allow this domain
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], // Added PATCH method here
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], // Added PATCH method
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'], // Updated allowed headers
   credentials: true, // If using cookies or credentials
+  exposedHeaders: ['Content-Length', 'X-Requested-With'] // Optional: headers the server can expose
 }));
 app.options('*', cors());// Handle preflight requests
 
