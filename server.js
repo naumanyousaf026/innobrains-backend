@@ -80,7 +80,7 @@ app.use("/api/admin", adminRoutes);
 app.use('/api/aboutus', aboutUsRoutes);
 app.use('/api/company-values', companyValuesRoute);
 app.use('/api/stats', stats);
-app.use('/api/privacy-policy', privacyPolicyRoutes);
+app.use('/api/privacypolicy', privacyPolicyRoutes);
 
 app.use("/api/refund", refundRoutes);
 app.use("/api/terms", termsRoutes);
