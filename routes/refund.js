@@ -12,11 +12,11 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Create a section
+// Create a new section
 router.post("/", async (req, res) => {
   try {
-    const { title, content } = req.body;
-    const newSection = new RefundSection({ title, content });
+    const { sectionId, title, description, items } = req.body;
+    const newSection = new RefundSection({ sectionId, title, description, items });
     await newSection.save();
     res.status(201).json(newSection);
   } catch (err) {
@@ -24,7 +24,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Update a section
+// Update an existing section
 router.put("/:id", async (req, res) => {
   try {
     const updated = await RefundSection.findByIdAndUpdate(req.params.id, req.body, { new: true });
