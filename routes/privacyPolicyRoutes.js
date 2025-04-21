@@ -1,37 +1,21 @@
-// routes/privacyPolicyRoutes.js
 const express = require("express");
 const router = express.Router();
 const PrivacyPolicy = require("../models/PrivacyPolicy");
 
-// Get all sections
+// Get the privacy policy
 router.get("/", async (req, res) => {
-  const sections = await PrivacyPolicy.find();
-  res.json(sections);
+  const policy = await PrivacyPolicy.findOne();
+  res.json(policy);
 });
 
-// Create a section
+// Create or Replace the whole privacy policy
 router.post("/", async (req, res) => {
-  const { title, content } = req.body;
-  const newSection = new PrivacyPolicy({ title, content });
-  await newSection.save();
-  res.status(201).json(newSection);
-});
+  const { sections } = req.body;
 
-// Update a section
-router.put("/:id", async (req, res) => {
-  const { title, content } = req.body;
-  const updated = await PrivacyPolicy.findByIdAndUpdate(
-    req.params.id,
-    { title, content },
-    { new: true }
-  );
-  res.json(updated);
-});
+  // Remove old and insert new
+  await PrivacyPolicy.deleteMany({});
+  const newPolicy = new PrivacyPolicy({ sections });
+  await newPolicy.save();
 
-// Delete a section
-router.delete("/:id", async (req, res) => {
-  await PrivacyPolicy.findByIdAndDelete(req.params.id);
-  res.json({ message: "Section deleted" });
+  res.status(201).json(newPolicy);
 });
-
-module.exports = router;
