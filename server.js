@@ -14,7 +14,7 @@ const app = express();
 // Middlewares
 app.use(cors({
   origin: 'https://innobrains.pk', // Only allow this domain
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], // Added PATCH method here
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true, // If using cookies or credentials
 }));
