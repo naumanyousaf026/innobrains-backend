@@ -137,7 +137,7 @@ router.patch('/:id', upload.single('featuredImage'), async (req, res) => {
     
     if (req.file) {
       // Handle image update - delete old image if exists
-      const oldBlog = await BlogModel.findById(req.params.id);
+      const oldBlog = await Blog.findById(req.params.id);  // Changed from BlogModel to Blog
       if (oldBlog && oldBlog.image && oldBlog.image !== blogData.image) {
         const oldImagePath = path.join(__dirname, '..', oldBlog.image);
         if (fs.existsSync(oldImagePath)) {
@@ -145,9 +145,10 @@ router.patch('/:id', upload.single('featuredImage'), async (req, res) => {
         }
       }
       blogData.image = `/blogImages/${req.file.filename}`;
+      blogData.featuredImage = `/blogImages/${req.file.filename}`;  // Update both image fields
     }
     
-    const updatedBlog = await BlogModel.findByIdAndUpdate(
+    const updatedBlog = await Blog.findByIdAndUpdate(  // Changed from BlogModel to Blog
       req.params.id, 
       blogData, 
       { new: true }
