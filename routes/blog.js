@@ -18,17 +18,14 @@ const storage = multer.diskStorage({
     cb(null, blogImagesDir);
   },
   filename: (req, file, cb) => {
-    // Create a safe filename with original extension
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
     const extension = path.extname(file.originalname);
     cb(null, 'blog-' + uniqueSuffix + extension);
   },
 });
 
-// Add file filter to only allow image files
 const fileFilter = (req, file, cb) => {
   const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-  
   if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
@@ -36,32 +33,31 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-const upload = multer({ 
-  storage: storage, 
-  fileFilter: fileFilter,
-  limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB size limit
-  }
+const upload = multer({
+  storage,
+  fileFilter,
+  limits: { fileSize: 5 * 1024 * 1024 }
 });
 
-// Routes for blogs
+// ---------------------------- ROUTES ----------------------------
+
+// Public route: Get only published blogs
 router.get("/", async (req, res) => {
   try {
-    const { page = 1, limit = 10, category, tag, status } = req.query;
-    const query = {};
-    
+    const { page = 1, limit = 10, category, tag } = req.query;
+    const query = { status: "published" };
+
     if (category) query.category = category;
     if (tag) query.tags = { $in: [tag] };
-    if (status) query.status = status;
-    
+
     const blogs = await Blog.find(query)
       .sort({ createdAt: -1 })
       .limit(parseInt(limit))
       .skip((parseInt(page) - 1) * parseInt(limit))
-      .select('-content'); // Exclude content for list view
-    
+      .select('-content');
+
     const count = await Blog.countDocuments(query);
-    
+
     res.status(200).json({
       blogs,
       totalPages: Math.ceil(count / limit),
@@ -74,12 +70,22 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Admin route: Get all blogs (draft + published)
+router.get("/admin/all", async (req, res) => {
+  try {
+    const blogs = await Blog.find().sort({ createdAt: -1 });
+    res.status(200).json(blogs);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch all blogs", details: err.message });
+  }
+});
+
 // Get a single blog by ID
 router.get("/:id", async (req, res) => {
   try {
     const blog = await Blog.findById(req.params.id);
-    if (!blog) {
-      return res.status(404).json({ error: "Blog not found" });
+    if (!blog || blog.status !== 'published') {
+      return res.status(404).json({ error: "Blog not found or not published" });
     }
     res.status(200).json(blog);
   } catch (err) {
@@ -90,44 +96,27 @@ router.get("/:id", async (req, res) => {
 // Create a new blog
 router.post("/", upload.single("featuredImage"), async (req, res) => {
   try {
-    const { title, duration, category, content, tags, status, author } = req.body;
-    
-    // Create slug from title
+    const { title, duration, category, content, tags, status = 'draft', author = 'Admin' } = req.body;
     const slug = slugify(title, { lower: true, strict: true });
-    
+
     const newBlog = new Blog({
-      title,
-      slug,
-      duration,
-      category,
-      content,
-      status: status || 'draft',
-      author: author || 'Admin',
+      title, slug, duration, category, content,
+      status,
+      author,
     });
-    
-    // Handle the uploaded file
+
     if (req.file) {
-      // Store the full path to the file in the database
       newBlog.featuredImage = `/blogImages/${req.file.filename}`;
-      
-      // For backward compatibility, also set the image field
       newBlog.image = `/blogImages/${req.file.filename}`;
     }
-    
-    // Handle tags
+
     if (tags) {
-      try {
-        newBlog.tags = typeof tags === 'string' ? JSON.parse(tags) : tags;
-      } catch (error) {
-        console.error("Error parsing tags:", error);
-        newBlog.tags = [];
-      }
+      newBlog.tags = typeof tags === 'string' ? JSON.parse(tags) : tags;
     }
-    
+
     const savedBlog = await newBlog.save();
     res.status(201).json(savedBlog);
   } catch (err) {
-    console.error("Error saving blog:", err);
     res.status(500).json({ error: "Failed to save blog", details: err.message });
   }
 });
@@ -136,55 +125,37 @@ router.post("/", upload.single("featuredImage"), async (req, res) => {
 router.put("/:id", upload.single("featuredImage"), async (req, res) => {
   try {
     const { title, duration, category, content, tags, status, author } = req.body;
-    const updateData = { title, duration, category, content };
-    
-    if (status) updateData.status = status;
-    if (author) updateData.author = author;
-    
-    // Update slug if title is changed
+    const updateData = { title, duration, category, content, status, author };
+
     if (title) {
       updateData.slug = slugify(title, { lower: true, strict: true });
     }
-    
-    // Handle the uploaded file
+
     if (req.file) {
-      // Get the existing blog to check if we need to delete old image
       const existingBlog = await Blog.findById(req.params.id);
       if (existingBlog && existingBlog.featuredImage) {
         const oldImagePath = path.join(__dirname, '..', existingBlog.featuredImage);
-        // Delete the old image if it exists
-        if (fs.existsSync(oldImagePath)) {
-          fs.unlinkSync(oldImagePath);
-        }
+        if (fs.existsSync(oldImagePath)) fs.unlinkSync(oldImagePath);
       }
-      
-      // Store the new image path
+
       updateData.featuredImage = `/blogImages/${req.file.filename}`;
-      updateData.image = `/blogImages/${req.file.filename}`; // For backward compatibility
+      updateData.image = `/blogImages/${req.file.filename}`;
     }
-    
-    // Handle tags
+
     if (tags) {
-      try {
-        updateData.tags = typeof tags === 'string' ? JSON.parse(tags) : tags;
-      } catch (error) {
-        console.error("Error parsing tags:", error);
-      }
+      updateData.tags = typeof tags === 'string' ? JSON.parse(tags) : tags;
     }
-    
-    const updatedBlog = await Blog.findByIdAndUpdate(
-      req.params.id,
-      updateData,
-      { new: true, runValidators: true }
-    );
-    
+
+    const updatedBlog = await Blog.findByIdAndUpdate(req.params.id, updateData, {
+      new: true, runValidators: true
+    });
+
     if (!updatedBlog) {
       return res.status(404).json({ error: "Blog not found" });
     }
-    
+
     res.status(200).json(updatedBlog);
   } catch (err) {
-    console.error("Error updating blog:", err);
     res.status(500).json({ error: "Failed to update blog", details: err.message });
   }
 });
@@ -193,33 +164,29 @@ router.put("/:id", upload.single("featuredImage"), async (req, res) => {
 router.delete("/:id", async (req, res) => {
   try {
     const blog = await Blog.findById(req.params.id);
-    
+
     if (!blog) {
       return res.status(404).json({ error: "Blog not found" });
     }
-    
-    // Delete associated image if it exists
+
     if (blog.featuredImage) {
       const imagePath = path.join(__dirname, '..', blog.featuredImage);
-      if (fs.existsSync(imagePath)) {
-        fs.unlinkSync(imagePath);
-      }
+      if (fs.existsSync(imagePath)) fs.unlinkSync(imagePath);
     }
-    
+
     await Blog.findByIdAndDelete(req.params.id);
     res.status(200).json({ message: "Blog deleted successfully" });
   } catch (err) {
-    console.error("Error deleting blog:", err);
     res.status(500).json({ error: "Failed to delete blog", details: err.message });
   }
 });
 
-// Get blogs by slug
+// Get blog by slug (for frontend display)
 router.get("/slug/:slug", async (req, res) => {
   try {
-    const blog = await Blog.findOne({ slug: req.params.slug });
+    const blog = await Blog.findOne({ slug: req.params.slug, status: "published" });
     if (!blog) {
-      return res.status(404).json({ error: "Blog not found" });
+      return res.status(404).json({ error: "Blog not found or not published" });
     }
     res.status(200).json(blog);
   } catch (err) {
@@ -227,7 +194,7 @@ router.get("/slug/:slug", async (req, res) => {
   }
 });
 
-// Get all categories
+// Categories
 router.get("/categories/all", async (req, res) => {
   try {
     const categories = await Blog.distinct("category");
@@ -237,7 +204,7 @@ router.get("/categories/all", async (req, res) => {
   }
 });
 
-// Get all tags
+// Tags
 router.get("/tags/all", async (req, res) => {
   try {
     const tags = await Blog.distinct("tags");
