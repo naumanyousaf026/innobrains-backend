@@ -121,42 +121,42 @@ router.post("/", upload.single("featuredImage"), async (req, res) => {
   }
 });
 
-// Update blog by ID
-router.put("/:id", upload.single("featuredImage"), async (req, res) => {
+
+// PATCH a blog - update existing blog
+router.patch('/:id', upload.single('featuredImage'), async (req, res) => {
   try {
-    const { title, duration, category, content, tags, status, author } = req.body;
-    const updateData = { title, duration, category, content, status, author };
-
-    if (title) {
-      updateData.slug = slugify(title, { lower: true, strict: true });
-    }
-
+    const blogData = {
+      title: req.body.title,
+      duration: req.body.duration,
+      category: req.body.category,
+      content: req.body.content,
+      status: req.body.status,
+      author: req.body.author,
+      tags: req.body.tags ? JSON.parse(req.body.tags) : []
+    };
+    
     if (req.file) {
-      const existingBlog = await Blog.findById(req.params.id);
-      if (existingBlog && existingBlog.featuredImage) {
-        const oldImagePath = path.join(__dirname, '..', existingBlog.featuredImage);
-        if (fs.existsSync(oldImagePath)) fs.unlinkSync(oldImagePath);
+      // Handle image update - delete old image if exists
+      const oldBlog = await BlogModel.findById(req.params.id);
+      if (oldBlog && oldBlog.image && oldBlog.image !== blogData.image) {
+        const oldImagePath = path.join(__dirname, '..', oldBlog.image);
+        if (fs.existsSync(oldImagePath)) {
+          fs.unlinkSync(oldImagePath);
+        }
       }
-
-      updateData.featuredImage = `/blogImages/${req.file.filename}`;
-      updateData.image = `/blogImages/${req.file.filename}`;
+      blogData.image = `/blogImages/${req.file.filename}`;
     }
-
-    if (tags) {
-      updateData.tags = typeof tags === 'string' ? JSON.parse(tags) : tags;
-    }
-
-    const updatedBlog = await Blog.findByIdAndUpdate(req.params.id, updateData, {
-      new: true, runValidators: true
-    });
-
-    if (!updatedBlog) {
-      return res.status(404).json({ error: "Blog not found" });
-    }
-
-    res.status(200).json(updatedBlog);
+    
+    const updatedBlog = await BlogModel.findByIdAndUpdate(
+      req.params.id, 
+      blogData, 
+      { new: true }
+    );
+    
+    if (!updatedBlog) return res.status(404).json({ message: 'Blog not found' });
+    res.json(updatedBlog);
   } catch (err) {
-    res.status(500).json({ error: "Failed to update blog", details: err.message });
+    res.status(400).json({ message: err.message });
   }
 });
 
