@@ -39,6 +39,43 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 }
 });
 
+// Function to generate slugs for all blogs
+async function generateSlugs() {
+  try {
+    // Get all blogs without slugs or with empty slugs
+    const blogs = await Blog.find({ $or: [{ slug: { $exists: false } }, { slug: "" }] });
+    
+    console.log(`Found ${blogs.length} blogs without slugs`);
+    
+    // Update each blog with a slug
+    for (const blog of blogs) {
+      const slug = slugify(blog.title, { lower: true, strict: true });
+      
+      // Check if slug already exists (avoid duplicates)
+      const existingBlog = await Blog.findOne({ slug });
+      
+      if (existingBlog && existingBlog._id.toString() !== blog._id.toString()) {
+        // If duplicate, add a random suffix
+        const uniqueSuffix = Date.now().toString().slice(-4);
+        blog.slug = `${slug}-${uniqueSuffix}`;
+      } else {
+        blog.slug = slug;
+      }
+      
+      await blog.save();
+      console.log(`Updated blog "${blog.title}" with slug "${blog.slug}"`);
+    }
+    
+    console.log('All blogs updated successfully!');
+  } catch (error) {
+    console.error('Error generating slugs:', error);
+  } finally {
+    mongoose.disconnect();
+  }
+}
+
+// Run the function
+generateSlugs();
 // ---------------------------- ROUTES ----------------------------
 
 // Public route: Get only published blogs
@@ -135,9 +172,15 @@ router.patch('/:id', upload.single('featuredImage'), async (req, res) => {
       tags: req.body.tags ? JSON.parse(req.body.tags) : []
     };
     
+    // Generate/update slug if title is changing
+    if (req.body.title) {
+      const slugify = require('slugify');
+      blogData.slug = slugify(req.body.title, { lower: true, strict: true });
+    }
+    
     if (req.file) {
       // Handle image update - delete old image if exists
-      const oldBlog = await Blog.findById(req.params.id);  // Changed from BlogModel to Blog
+      const oldBlog = await Blog.findById(req.params.id);
       if (oldBlog && oldBlog.image && oldBlog.image !== blogData.image) {
         const oldImagePath = path.join(__dirname, '..', oldBlog.image);
         if (fs.existsSync(oldImagePath)) {
@@ -148,7 +191,7 @@ router.patch('/:id', upload.single('featuredImage'), async (req, res) => {
       blogData.featuredImage = `/blogImages/${req.file.filename}`;  // Update both image fields
     }
     
-    const updatedBlog = await Blog.findByIdAndUpdate(  // Changed from BlogModel to Blog
+    const updatedBlog = await Blog.findByIdAndUpdate(
       req.params.id, 
       blogData, 
       { new: true }
