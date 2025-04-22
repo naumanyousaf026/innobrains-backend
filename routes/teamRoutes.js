@@ -28,7 +28,7 @@ router.post("/", upload.single("image"), async (req, res) => {
       role: req.body.role,
       description: req.body.description,
       email: req.body.email, // Capture email from request body
-      image: req.file ? req.file.filename : undefined, // Save image path if uploaded
+      image: req.file ? req.file.filename : undefined, // Save just the filename
     });
 
     const savedTeamMember = await newTeamMember.save();
@@ -74,9 +74,9 @@ router.put("/:id", upload.single("image"), async (req, res) => {
       email: req.body.email, // Capture email from request body
     };
 
-    // If there's a new image, update the image path
+    // If there's a new image, update the image filename only (without path)
     if (req.file) {
-      updatedData.image = `/TeamImages/${req.file.filename}`;
+      updatedData.image = req.file.filename;
     }
 
     const updatedTeamMember = await Team.findByIdAndUpdate(
@@ -90,6 +90,7 @@ router.put("/:id", upload.single("image"), async (req, res) => {
 
     res.json(updatedTeamMember);
   } catch (err) {
+    console.error(err); // Log error for debugging
     res.status(400).json({ error: "Failed to update team member" });
   }
 });

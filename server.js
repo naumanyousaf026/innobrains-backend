@@ -35,7 +35,7 @@ app.use("/images", express.static(path.join(__dirname, "src/images")));
 const reviewRoutes = require("./routes/review");
 const teamRoutes = require("./routes/teamRoutes");
 const achievementRoutes = require("./routes/achievementRoutes");
-const visitorRoutes = require("./routes/visitor");
+
 const partnerRoutes = require("./routes/partner");
 const blogRoutes = require("./routes/blog");
 const contactFormRoutes = require("./routes/ContactForm");
@@ -71,7 +71,7 @@ app.use("/api/blog", blogRoutes);
 app.use("/api/contact", contactFormRoutes);
 app.use("/api/product", productRoutes);
 app.use("/api/service", serviceRoutes);
-app.use("/api/visitor", visitorRoutes);
+
 app.use("/api/team", teamRoutes);
 app.use("/api/achievements", achievementRoutes);
 app.use("/api/contact-info", contactInfoRoutes);
