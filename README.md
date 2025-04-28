@@ -13,8 +13,9 @@ Welcome to the backend of **Innobrains**, a dynamic and scalable backend applica
 - Blogs editor functionality (rich text formatting experience)
 - All sections dynamically manageable via form submissions
 - MongoDB database integration
-- Environment variables (`.env`) secured and hidden from public
-- Clean and modular project structure
+- Secure environment variables (`.env`)
+- **Email OTP Verification** using **Nodemailer** (Gmail SMTP)
+- Utility functions organized inside `/utils`
 
 ---
 
@@ -25,14 +26,13 @@ Welcome to the backend of **Innobrains**, a dynamic and scalable backend applica
 - **MongoDB** (Mongoose ODM)
 - **Multer** (File uploads)
 - **Dotenv** (Environment management)
+- **Nodemailer** (Email services)
 
 ---
 
 ## 🗂️ Project Structure Overview
 
-innobrains-backend/ ├── config/ ├── images/ │ ├── blogImages/ │ ├── serviceImages/ │ ├── teamImages/ │ ├── growthImages/ ├── models/ ├── routes/ ├── uploads/ ├── .env (secured) ├── .gitignore ├── package.json ├── README.md ├── server.js
-
----
+innobrains-backend/ ├── config/ ├── images/ │ ├── blogImages/ │ ├── serviceImages/ │ ├── teamImages/ │ ├── growthImages/ ├── models/ ├── routes/ ├── utils/ │ ├── otpService.js (Nodemailer OTP Function) ├── .env (secured) ├── .gitignore ├── package.json ├── README.md ├── server.js
 
 ## 🛡️ Setup Instructions
 
