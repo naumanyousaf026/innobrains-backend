@@ -39,6 +39,8 @@ Welcome to the backend of **Innobrains**, a dynamic and scalable backend applica
 
 innobrains-backend/ ├── config/ ├── images/ │ ├── blogImages/ │ ├── serviceImages/ │ ├── teamImages/ │ ├── growthImages/ ├── models/ ├── routes/ ├── utils/ │ ├── otpService.js (Nodemailer OTP Function) ├── .env (secured) ├── .gitignore ├── package.json ├── README.md ├── server.js
 
+
+
 ## 🛡️ Setup Instructions
 
 ### 1. Clone the Repository
@@ -91,3 +93,6 @@ This project currently does not have a license.
 You can add an open-source license like MIT if needed in the future.
 
 
+## 🔥 Live Deployment
+
+- API Base URL: [https://api.innobrains.pk/](https://api.innobrains.pk/)
