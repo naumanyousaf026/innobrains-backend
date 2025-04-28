@@ -73,6 +73,7 @@ Easy to manage and scalable image structure.
 Integrated a rich-text editor-like experience for blog creation.
 
 Write blogs easily with real-time formatting and saving.
+
 ⚡ Important Points
 .env file is NOT public (secured by .gitignore).
 
