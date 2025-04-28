@@ -95,4 +95,5 @@ You can add an open-source license like MIT if needed in the future.
 
 ## 🔥 Live Deployment
 
-- API Base URL: [https://api.innobrains.pk/](https://api.innobrains.pk/)
+- API Base URL: [https://api.innobrains.pk/]
+          URL:      (https://innobrains.pk/)
